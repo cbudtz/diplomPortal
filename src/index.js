@@ -6,6 +6,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 
 ReactDOM.render(
-  <App name="Budtz"/>,
+  <App name="DiplomPortal"/>,
   document.getElementById('root')
 );
