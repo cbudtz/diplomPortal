@@ -1,23 +1,36 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import './Navbar.js';
 import $ from 'jquery';
+import TopMenu from './TopMenu.js'
+import Agenda from './Agenda.js'
+import JwtHandler from './jwthandler';
 
-import {Navbar, Nav, NavItem,MenuItem,NavDropdown} from 'react-bootstrap';
 
-class App extends Component {
+export default class App extends Component {
     constructor(props){
         super(props);
+        const user = JwtHandler.getUser();
         this.state = {
-            color: "hotpink",
+            user: user,
             navbar:[
-                {type:"NavItem",id:"F17/02324/0",text:"Agenda"},
-                {type:"NavItem",id:"F17/02324/1",  text:"Kursus oversigt"},
-                {type:"NavDropDown",id:"F17/02324/2",text:"Kurser",items:[
-                    {type:"MenuItem",id:"0",text:"test"}
-                    ]}
-            ]
+                {type:"NavDropDown",id:0,text:"F17 02324 Videregående Programmering",items:[
+                    {type:"MenuItem",id:1,text:"F17 62577 Datakommunikation"},
+                    {type:"MenuItem",id:2,text:"Gamle Kurser"},
+                    {type:"MenuItem",id:3,text:"Andre Kurser"}
+                ]},
+                {type:"NavItem",id:{period:"F17",course:"02324",component:"Agenda"},text:"Agenda"},
+                {type:"NavItem",id:"F17/02324/KursusOversigt",  text:"Kursus oversigt"},
+                {type:"NavItem",id:"F17/02324/Pensum", text:"Pensum"},
+                {type:"NavItem",id:"F17/02324/Forum", text:"Forum"},
+
+            ],
+            avatar: {id:"s134000"},
+            pages : {
+                0:{period:"F17",course:"02324",component:"Agenda"},
+                1:{period:"F17", course:"02324", component:"" }
+            },
+            activePage: {period:"F17",course:"02324",component:"Agenda"}
         }
     }
     test = (e) => {
@@ -25,58 +38,25 @@ class App extends Component {
             color:"Yellow"
         })
     }
-    getNavContent = () =>{
-        var content = this.state.navbar.map((nav, no) =>{
-            if(nav.type=="NavItem") {
-               return <NavItem key={nav.id} eventKey={nav.id}>{nav.text}</ NavItem>
-            } else {
-                console.log(nav.items);
-                var items = nav.items.map((item,no) =>{
-                   return <MenuItem key={item.id}>{item.text}</MenuItem>
-                })
-                console.log(items)
-                return <NavDropdown id={nav.id} title={nav.text}>
-                    {items}
-                </NavDropdown>
-            }
-        })
-        return content;
-    }
-    handleNavSelect = (e) =>{
-        this.setState({page:e})
-        console.log(e);
+
+    onMenuSelect = (e)=>{
+        console.log("got selection");
+        console.log(e)
+        this.setState({activePage:e})
     }
 
   render() {
+        console.log("main state:")
       console.log(this.state);
     return (
       <div className="App">
-          <div className="NavbarContainer">
-              <Navbar>
 
-                  <Navbar.Header>
-                      <Navbar.Brand >
-                          test
-                      </Navbar.Brand>
-                      <Navbar.Toggle/>
-                  </Navbar.Header>
-                  <Navbar.Collapse>
-                  <Nav onSelect={this.handleNavSelect}>
-                      {this.getNavContent()}
-                  </Nav>
-                  </Navbar.Collapse>
-              </Navbar>
-          </div>
-        <div className="container">
+          <TopMenu menuItems={this.state.navbar} avatar={this.state.avatar} activeId="F17/02324/Agenda" onSelect={this.onMenuSelect}/>
+
+            <Agenda course={{courseId: "02324F17", courseName:"Videregående programmering"}} apiUrl={this.props.apiUrl}/>
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome {this.state.color} {this.props.name} to React with hot reload</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-          <div>
-              This could be some bootstrap text this is pretty good for development!
-          </div>
+
+
           <div>
               <button onClick={this.test.bind(this)} >Click here!</button>
               <button onClick={()=>$('#test').html('Test')}>click me</button>
@@ -90,4 +70,9 @@ class App extends Component {
   }
 }
 
-export default App;
+App.propTypes = {
+    apiUrl : React.PropTypes.string
+}
+App.defaultProps = {
+    apiUrl: '' //for deployment at same root
+}
