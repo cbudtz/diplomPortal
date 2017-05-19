@@ -11,6 +11,10 @@ export default class App extends Component {
     constructor(props){
         super(props);
         const user = JwtHandler.getUser();
+        console.log("user passed to App:");
+        console.log(user);
+        var avatarid;
+        if(user)  avatarid = user.userName;
         this.state = {
             user: user,
             navbar:[
@@ -25,7 +29,7 @@ export default class App extends Component {
                 {type:"NavItem",id:"F17/02324/Forum", text:"Forum"},
 
             ],
-            avatar: {id:"s134000"},
+            avatar: {id:avatarid},
             pages : {
                 0:{period:"F17",course:"02324",component:"Agenda"},
                 1:{period:"F17", course:"02324", component:"" }

@@ -22,14 +22,15 @@ export default class Agenda extends Component {
             <Grid fluid>
                 <Row>
                     <Col mdOffset={2} md={4} sm={6}>
-                        {/*<LinkBox title={this.props.generalLinksTitle} linkUrl={generalLinkUrl}/>*/}
+                        <LinkBox title={this.props.generalLinksTitle} linkUrl={generalLinkUrl}/>
                     </Col>
                     <Col md={4} sm={6}>
                         <LinkBox title={this.props.courseLinksTitle} linkUrl={courseLinkUrl}/>
                     </Col>
 
-
                 </Row>
+
+
             </Grid>)
 
     }

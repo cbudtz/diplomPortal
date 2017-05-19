@@ -2,7 +2,8 @@
  * Created by Christian on 02-05-2017.
  */
 import React, {Component} from 'react';
-import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem, Button} from 'react-bootstrap';
+import Config from "./config";
 
 export default class TopMenu extends Component {
 
@@ -12,7 +13,12 @@ export default class TopMenu extends Component {
     };
 
     handleAvatarClick = (e) => {
+        if(this.props.avatar.id){
 
+        } else {
+            const redirectUrl = Config.ApiPath + "/rest/cn/login";
+            location.replace(redirectUrl)
+        }
     };
 
 
@@ -57,7 +63,7 @@ export default class TopMenu extends Component {
                     </Nav>
                     <Nav onSelect={this.handleAvatarClick} pullRight>
                         <NavItem>
-                            {this.props.avatar ? this.props.avatar.id : "Login"}
+                            {this.props.avatar.id ? this.props.avatar.id : "Login"}
                         </NavItem>
                     </Nav>
                 </Navbar.Collapse>

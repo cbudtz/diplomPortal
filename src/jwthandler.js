@@ -5,19 +5,22 @@
 export default class JwtHandler {
     static getUser = () => {
         var token = JwtHandler.getToken();
-        token = 'test';
-        if (token===null) {return null}
+        console.log(token);
+        if (!token) {return null}
         else {
-            token = 'eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEaXBsb21JdCIsInVzZXIiOnsidXNlcklkIjotMSwidXNlck5hbWUiOiJ0ZXN0IiwicGFzc3dvcmQiOiIifSwiZXhwIjoxNDkzOTk0MTc1fQ.QYPvN3HCMI3nQiii5qfR_GRVRhWeXbz87aGYz0lolNs';
             const claims = token.split(".")[1];
-            console.log(window.atob(claims));
-
-        };
+            const decodedClams = window.atob(claims);
+            const jsonClaims = JSON.parse(decodedClams);
+            console.log("found claims:");
+            console.log(jsonClaims.user);
+            //what??
+            return jsonClaims.user;
+        }
     }
     static getToken = () =>{
-        localStorage.getItem("portal-jwt-Token")
+        return localStorage.getItem("portal-jwt-Token")
     }
-    static setUser = (token) =>{
+    static setToken = (token) =>{
         localStorage.setItem("portal-jwt-Token",token)
     }
 

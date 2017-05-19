@@ -3,11 +3,10 @@
  */
 
 import React, {Component} from "react";
-import {Button, Col, Form, FormControl, Row, Well} from 'react-bootstrap'
+import {Button, Col, Glyphicon, Row, Well} from 'react-bootstrap'
 import ripple from '../ripple.svg';
 import NewLink from "./NewLink";
 export default class LinkBox extends Component {
-
 
     constructor(props) {
         super(props);
@@ -42,11 +41,24 @@ export default class LinkBox extends Component {
         const updatedNewLink = {text:this.state.newlink.text, href:e.target.value}
         this.setState({newlink:updatedNewLink});
     }
-    handleSubmit = (e) =>{
-        e.preventDefault();
-        console.log("submitting link" + this.state.newlink.href);
-        const newLinks = this.state.links.concat([{text:this.state.newlink.text, href:this.state.newlink.href}])
-        this.setState({links:newLinks, newlink:{text:'',href:''}});
+    handleNewLink = (link) =>{
+        console.log("posting nwe lilnk");
+        console.log(link);
+        const newLinks = this.state.links.concat([{text:link.text, href:link.href}])
+        this.setState({links:newLinks, newlink:{id:'new',text:'',href:''}});
+        fetch(this.props.linkUrl,{
+            mode:'cors',
+            method: 'POST',
+            body: JSON.stringify(link),
+            headers: new Headers({
+                'Content-type' : 'application/json'
+            })
+        }).then((response)=>{
+            console.log('posted link');
+            console.log(response);
+        }).catch((reponse)=>{
+            console.log("something went wrong while posting to " + this.props.linkUrl +"error: "+ reponse)
+        })
         console.log(this.state);
     }
 
@@ -56,11 +68,12 @@ export default class LinkBox extends Component {
     };
 
 
+
     getLinks = () => {
         return (
             this.state.links.map((link, index) => {
                 console.log("link " + link);
-                return <li key={index}><a href={link.href}>{link.text}</a></li>
+                return <li key={index}><a href={link.href}>{link.text}</a> {this.state.editmode&&<span><Glyphicon glyph="pencil"/><Glyphicon glyph="remove"/></span>}</li>
             })
         )
     }
@@ -71,17 +84,21 @@ export default class LinkBox extends Component {
 
                 <Well>
                     <Row>
-                    <Col xs={8} xsOffset={2} ><h4>{this.props.title}</h4></Col>
-                    <Col xs={2}><Button bsSize="xsmall" onClick={this.handleEditClick} active={this.state.editmode}>edit</Button></Col>
+                    <Col xs={8} xsOffset={2} ><h4 className="text-center">{this.props.title}</h4></Col>
+                    <Col xs={2}><Button bsSize="xsmall" onClick={this.handleEditClick} active={this.state.editmode}><Glyphicon glyph="pencil"/>edit</Button></Col>
                     </Row>
+                    <Row>
+                    <Col xs={12}>
                     <div>
-                        <ul>
+                        <ul  className="list-unstyled">
                     {this.getLinks()}
                         </ul>
                     </div>
                     <div>
-                        {this.state.editmode &&<NewLink/>}
+                        {this.state.editmode &&<NewLink onSubmitLink={this.handleNewLink}/>}
                     </div>
+                    </Col>
+                    </Row>
                 </Well>)
         } else if (this.state.loading===true){
             return  <Well><img src={ripple} alt="loading..."></img></Well>
