@@ -73,7 +73,7 @@ export default class LinkBox extends Component {
         return (
             this.state.links.map((link, index) => {
                 console.log("link " + link);
-                return <li key={index}><a href={link.href}>{link.text}</a> {this.state.editmode&&<span><Glyphicon glyph="pencil"/><Glyphicon glyph="remove"/></span>}</li>
+                return <li key={link.id}><a href={link.href}>{link.text}</a> {this.state.editmode&&<span><Glyphicon glyph="pencil"/><Glyphicon glyph="remove"/></span>}</li>
             })
         )
     }
