@@ -2,7 +2,7 @@
  * Created by Christian on 02-05-2017.
  */
 import React, {Component} from 'react';
-import {Navbar, Nav, NavItem, NavDropdown, MenuItem, Button} from 'react-bootstrap';
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import Config from "./config";
 
 export default class TopMenu extends Component {
@@ -16,7 +16,7 @@ export default class TopMenu extends Component {
         if(this.props.avatar.id){
 
         } else {
-            const redirectUrl = Config.ApiPath + "/rest/cn/login";
+            const redirectUrl = Config.ApiPath ? Config.ApiPath + Config.campusNetServiceUrl : Config.campusNetServiceUrl;
             location.replace(redirectUrl)
         }
     };

@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import $ from 'jquery';
 import TopMenu from './TopMenu.js'
-import Agenda from './Agenda.js'
+import Agenda from './Agenda.jsx'
 import JwtHandler from './jwthandler';
 
 
@@ -34,7 +34,8 @@ export default class App extends Component {
                 0:{period:"F17",course:"02324",component:"Agenda"},
                 1:{period:"F17", course:"02324", component:"" }
             },
-            activePage: {period:"F17",course:"02324",component:"Agenda"}
+            activePage: {period:"F17",course:"02324",component:"Agenda"},
+            course:{courseId: "02324F17", courseName:"Videregående programmering", coursePlanId:"1Zj-1eLX67PQRzM7m1icq2vSXzbHn2iFvN4V9cUHTWQo", coursePlanSource:"GoogleSheet"}
         }
     }
     test = (e) => {
@@ -55,20 +56,11 @@ export default class App extends Component {
     return (
       <div className="App">
 
-          <TopMenu menuItems={this.state.navbar} avatar={this.state.avatar} activeId="F17/02324/Agenda" onSelect={this.onMenuSelect}/>
+          <TopMenu apiUrl={this.props.apiUrl} menuItems={this.state.navbar} avatar={this.state.avatar} activeId="F17/02324/Agenda" onSelect={this.onMenuSelect}/>
 
-            <Agenda course={{courseId: "02324F17", courseName:"Videregående programmering"}} apiUrl={this.props.apiUrl}/>
+            <Agenda course={this.state.course} apiUrl={this.props.apiUrl}/>
           <img src={logo} className="App-logo" alt="logo" />
 
-
-          <div>
-              <button onClick={this.test.bind(this)} >Click here!</button>
-              <button onClick={()=>$('#test').html('Test')}>click me</button>
-          </div>
-          <div id="test">
-
-
-          </div>
       </div>
     );
   }

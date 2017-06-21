@@ -12,9 +12,7 @@ console.log(token);
 if (token!=null && token.length>0){
     //Store token and redirect to baseURL
     localStorage.setItem("portal-jwt-Token",token);
-    var tokenString= localStorage.getItem("portal-jwt-Token");
     location.replace("/");
-
 }
 // Base React class
 
@@ -27,7 +25,7 @@ ReactDOM.render(
 
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
+    //name = name.replace(/[\[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
     if (!results) return null;
