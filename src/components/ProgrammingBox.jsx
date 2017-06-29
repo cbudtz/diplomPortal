@@ -2,6 +2,13 @@
  * Created by Christian on 23-05-2017.
  */
 import React, {Component} from "react";
+import AceEditor from 'react-ace';
+import 'brace/mode/java.js';
+import 'brace/mode/javascript';
+import 'brace/theme/eclipse';
+import 'brace/ext/language_tools';
+import 'brace/ext/searchbox';
+
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from "react-bootstrap";
 import update from 'immutability-helper';
 
@@ -38,10 +45,16 @@ export default class ProgrammingBox extends Component {
         this.setState(newState);
 
     }
+
+    handleAceEditorChange = (e) =>{
+        const activeIndex = this.state.activeFile;
+        const newState = update(this.state,{files:{[activeIndex]:{fileContents:{$set : e}}}});
+        this.setState(newState);
+    }
     handleRunClick = (e) =>{
         const requestObj = {mainClass:this.state.mainClass,
-        files:this.state.files,
-        input:this.state.input}
+            files:this.state.files,
+            input:this.state.input}
         const requestJSON = JSON.stringify(requestObj);
         var runState = update(this.state,{
             compiling:{$set:true},
@@ -77,7 +90,7 @@ export default class ProgrammingBox extends Component {
     }
 
     getSystemOut = ()=>{
-       return this.mapLines(this.state.systemOut);
+        return this.mapLines(this.state.systemOut);
     }
     getSystemErr = ()=>{
         return this.mapLines(this.state.systemErr);
@@ -95,6 +108,24 @@ export default class ProgrammingBox extends Component {
         console.log(this.state);
         return (
             <div>
+                <AceEditor
+                    mode="java"
+                    theme="eclipse"
+                    name="blah1"
+                    height="6em"
+                    setOptions={{
+                        enableBasicAutocompletion: true,
+                        enableLiveAutocompletion: false,
+                        enableSnippets: true,
+                        showLineNumbers: true,
+                        tabSize: 4,
+                    }}
+                    value={this.state.files[this.state.activeFile].fileContents}
+                    onChange={this.handleAceEditorChange}
+
+                />
+
+
 
                 <FormGroup controlId="codeArea">
                     <ControlLabel>Code</ControlLabel>

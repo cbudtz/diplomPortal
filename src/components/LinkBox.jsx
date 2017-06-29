@@ -22,7 +22,7 @@ export default class LinkBox extends Component {
     }
 
     fetchLinks = () => {
-        Rip.get(this.props.linkUrl,(json)=>{
+        Rip.getJson(this.props.linkUrl,(json)=>{
             this.setState({links:json, loading:"done"});
         }, (message)=>{
             this.setState({links:[], loading:"fail"});

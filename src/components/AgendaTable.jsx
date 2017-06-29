@@ -15,7 +15,7 @@ export default class AgendaTable extends Component {
     }
 
     fetchCoursePlan = () => {
-        Rip.get(this.props.courseplanUrl,(json)=>{
+        Rip.getJson(this.props.courseplanUrl,(json)=>{
            this.setState({coursePlan:json, loading:"done"})
         }, (error)=>{
             console.log(error);

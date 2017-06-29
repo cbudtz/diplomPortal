@@ -2,17 +2,23 @@
  * Created by Christian on 30-05-2017.
  */
 import React, {Component, PropTypes} from 'react';
-import {ListGroup, ListGroupItem} from 'react-bootstrap';
+import {Col, Grid, ListGroup, ListGroupItem, Row, Well} from 'react-bootstrap';
 import TextSubElement from "./TextSubElement";
 import PopOutLinkSubElement from "./PopOutLinkSubElement";
 import ProgrammingBox from "./ProgrammingBox";
+import EmbeddedLinkSubElement from "./EmbeddedLinkSubelement"
+import {AutoAffix} from "react-overlays";
+import ContentEditable from "react-contenteditable";
+import QuizSubElement from "./QuizSubElement";
+import ConceptQuestionSubElement from "./ConceptQuestionSubElement";
 
 export default class ActivityElementContainer extends Component {
 
     constructor(props) {
-        super();
-
-
+        super(props);
+        this.state={
+            html:"noter"
+        }
     }
 
     getSubElementBoxes = () => {
@@ -24,27 +30,73 @@ export default class ActivityElementContainer extends Component {
                 } else if (subElement.subElementType === 'Pop_Out_Link') {
                     return <PopOutLinkSubElement key={index} header={subElement.title} link={subElement.hyperLink}/>
                 } else if (subElement.subElementType === 'Code') {
-                    return (<ListGroupItem header={subElement.title} key={index}>
-                        <ProgrammingBox/>
+                    //TODO move to containerElement
+                    return (<ListGroupItem key={index}>
+                        <h4 className="list-group-item-heading" > {subElement.title}</h4>
+                        <Grid fluid>
+                            <Row>
+                                <Col sm={8}>
+                                    <ProgrammingBox/>
+                                </Col>
+                                <Col sm={4}>
+                                    <h4>Noter</h4>
+                                    <ContentEditable html={this.state.html}/>
+                                </Col>
+                            </Row>
+                        </Grid>
                     </ListGroupItem>)
+                } else if (subElement.subElementType === 'Embedded_Link'){
+                    return <EmbeddedLinkSubElement key={index} title={subElement.title} link={subElement.hyperLink}/>
+                } else if (subElement.subElementType === 'Concept_Question') {
+                    return <ConceptQuestionSubElement/>
+                } else if(subElement.subElementType==='Quiz') {
+                    return <QuizSubElement/>
                 } else { //placeholder for now...
                     return <ListGroupItem key={index} header={subElement.title}>Coming Sooon!</ListGroupItem>
                 }
+
             })
         }
     }
 
+    getMenuElements = () => {
+        if (this.props.subElements) {
+            return this.props.subElements.map((subelement, index)=>{
+                return <li key={index}><input key={index} id={"test"+index} type="checkbox" defaultChecked={true}/><label htmlFor={"test" + index}> </label>{subelement.title}</li>
+            })
+        }
+    }
+
+    scrollToTop = () =>{
+        window.scrollTo(0,0);
+    };
+
 
     render() {
         return (
-            <div>
-            <h1>{this.props.title}</h1>
-            <ListGroup>
-                {this.getSubElementBoxes()}
-            </ListGroup>
-            </div>
+            <Row>
+
+                <Col md={3} sm={4}>
+                    <AutoAffix viewportOffsetTop={70} container={this}>
+                        <Well>
+                            <a style={{cursor:'pointer'}} onClick={this.scrollToTop}>Til oversigten</a>
+                            <ul>
+                                {this.getMenuElements()}
+                            </ul>
+                        </Well>
+                    </AutoAffix>
+                </Col>
+
+                <Col md={9} sm={8}>
+                    <h1>{this.props.title}</h1>
+                    <ListGroup>
+                        {this.getSubElementBoxes()}
+                    </ListGroup>
+                </Col>
+            </Row>
         )
     }
+
 
 }
 

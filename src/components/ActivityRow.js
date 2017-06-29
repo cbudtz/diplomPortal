@@ -16,17 +16,25 @@ export default class ActivityRow extends Component{
     }
 
     render(){
-        console.log(this.props)
         const date = new Date(this.props.activity.endDate);
         var dateString = ''
         if (this.props.activity.endDate) {
             dateString = date.getDate();
             dateString += '/' + (date.getMonth() + 1);
-            dateString += ' ' + date.getUTCHours();
-            dateString += ':' + (date.getUTCMinutes().toString().length === 1 ? '0' : '');
-            dateString += date.getUTCMinutes();
+            if(date.getUTCHours()!==0 || date.getUTCMinutes()!==0) {
+                dateString += ' ' + date.getUTCHours();
+                dateString += ':' + (date.getUTCMinutes().toString().length === 1 ? '0' : '');
+                dateString += date.getUTCMinutes();
+            }
         }
-        return <tr className={this.props.activity.status==="DRAFT" ?'text-muted':'' }>
+        var className = ''
+        if (date < new Date()) {
+            className += 'success '
+        }
+        if (this.props.activity.status==='DRAFT'){
+            className += 'text-muted ';
+        }
+        return <tr className={className}>
             <td>{this.props.activity.title}</td>
             <td>{this.props.activity.description}</td>
             <td>{dateString}</td>

@@ -37,7 +37,7 @@ export default class Agenda extends Component {
         const type = activityElement.activityElementType;
         if (type === "GoogleSheet") {
 
-            Rip.get(this.state.activityElementUrl + "/googleid/" + activityElement.googleSheetId,
+            Rip.getJson(this.state.activityElementUrl + "/googleid/" + activityElement.googleSheetId,
                 (json) => {
                 console.log(json);
                     this.setState({
@@ -76,10 +76,11 @@ export default class Agenda extends Component {
                                      handleActivityElementClick={this.handleActivityClick}/>
                     </Col>
                 </Row>
-                <Row>
+
+                <div>
                     <ActivityElementContainer ref="activityContainer" title={this.state.activeActivityElement}
                                               subElements={this.state.activitySubElements}/>
-                </Row>
+                </div>
 
 
             </Grid>)

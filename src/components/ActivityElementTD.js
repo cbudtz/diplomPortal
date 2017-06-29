@@ -11,9 +11,7 @@ export default class ActivityElementTD extends Component {
 
     };
 
-
     render() {
-        console.log(this.props)
         if (this.props.activityElement.hyperLink) {
 
             return this.linkElement()

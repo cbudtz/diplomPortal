@@ -7,7 +7,7 @@ import JwtHandler from '../jwthandler'
 const debug = true;
 export default class Rip {
 
-    static get = (url, callback, catchback) => {
+    static getJson = (url, callback, catchback) => {
         if (debug) console.log("Rip: Fetching from " + url);
         var jwtToken = JwtHandler.getToken();
         fetch(url, {
@@ -21,6 +21,27 @@ export default class Rip {
             Rip.handleJSON(response,callback,catchback);
         }).catch((response) => {
             catchback({message: "Rip: Error while fetching: " + response.message, response: response});
+        })
+    }
+
+    static getPlain = (url, callback,catchback) => {
+        fetch(url,{
+            mode: 'cors',
+            method: 'GET'
+        }).then((response)=>{
+            console.log('got response');
+            response.text().then((text) =>{
+                callback(text);
+            })
+        }).catch((response)=>{
+            catchback({message:"Rip: Error while fetching " + response.message, response: response});
+        })
+    }
+
+    static getNoCors = (url) =>{
+        fetch(url,{
+            mode: 'no-cors',
+            method: 'GET'
         })
     }
 
