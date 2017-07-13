@@ -14,7 +14,7 @@ export default class JwtHandler {
             const decodedClams = decodeURIComponent(escape(window.atob(claims)));
             const jsonClaims = JSON.parse(decodedClams);
             console.log("found claims:");
-            console.log(jsonClaims.user);
+            console.log(jsonClaims);
             //what??
             return jsonClaims.user;
         }

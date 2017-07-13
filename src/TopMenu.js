@@ -65,7 +65,8 @@ export default class TopMenu extends Component {
     }
 
     render() {
-        console.log(this.props.avatar)
+        console.log("menu state: ");
+        console.log(this.state)
         return <div className="NavbarContainer">
             <Navbar className="navbar-fixed-top" fluid>
                 <Navbar.Header>

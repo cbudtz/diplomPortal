@@ -2,15 +2,15 @@
  * Created by Christian on 30-05-2017.
  */
 import React, {Component, PropTypes} from 'react';
-import {Col, Grid, ListGroup, ListGroupItem, Row, Well} from 'react-bootstrap';
+import {Col, Grid, ListGroup, ListGroupItem, Modal, Row, Well} from 'react-bootstrap';
 import TextSubElement from "./TextSubElement";
 import PopOutLinkSubElement from "./PopOutLinkSubElement";
 import ProgrammingBox from "./ProgrammingBox";
 import EmbeddedLinkSubElement from "./EmbeddedLinkSubelement"
-import {AutoAffix} from "react-overlays";
 import ContentEditable from "react-contenteditable";
 import QuizSubElement from "./QuizSubElement";
 import ConceptQuestionSubElement from "./ConceptQuestionSubElement";
+import '../index.css'
 
 export default class ActivityElementContainer extends Component {
 
@@ -26,13 +26,14 @@ export default class ActivityElementContainer extends Component {
         if (this.props.subElements) {
             return this.props.subElements.map((subElement, index) => {
                 if (subElement.subElementType === 'Text') {
-                    return <TextSubElement key={index} header={subElement.title} text={subElement.content}/>
+                    return <TextSubElement key={index} checkBoxId={index} header={subElement.title} text={subElement.content} onCheck={this.handleCheck}/>
                 } else if (subElement.subElementType === 'Pop_Out_Link') {
-                    return <PopOutLinkSubElement key={index} header={subElement.title} link={subElement.hyperLink}/>
+                    return <PopOutLinkSubElement key={index} checkBoxId={index} header={subElement.title} link={subElement.hyperLink}/>
                 } else if (subElement.subElementType === 'Code') {
                     //TODO move to containerElement
                     return (<ListGroupItem key={index}>
-                        <h4 className="list-group-item-heading" > {subElement.title}</h4>
+                        <h4 className="list-group-item-heading" ><input id={"check"+index} type="checkbox" defaultChecked={true}/><label htmlFor={"check" + index}> </label>
+                            {subElement.title}</h4>
                         <Grid fluid>
                             <Row>
                                 <Col sm={8}>
@@ -46,11 +47,11 @@ export default class ActivityElementContainer extends Component {
                         </Grid>
                     </ListGroupItem>)
                 } else if (subElement.subElementType === 'Embedded_Link'){
-                    return <EmbeddedLinkSubElement key={index} title={subElement.title} link={subElement.hyperLink}/>
+                    return <EmbeddedLinkSubElement checkBoxId={index} key={index} title={subElement.title} link={subElement.hyperLink}/>
                 } else if (subElement.subElementType === 'Concept_Question') {
-                    return <ConceptQuestionSubElement/>
+                    return <ConceptQuestionSubElement checkBoxId={index}/>
                 } else if(subElement.subElementType==='Quiz') {
-                    return <QuizSubElement/>
+                    return <QuizSubElement checkBoxId={index}/>
                 } else { //placeholder for now...
                     return <ListGroupItem key={index} header={subElement.title}>Coming Sooon!</ListGroupItem>
                 }
@@ -62,7 +63,9 @@ export default class ActivityElementContainer extends Component {
     getMenuElements = () => {
         if (this.props.subElements) {
             return this.props.subElements.map((subelement, index)=>{
-                return <li key={index}><input key={index} id={"test"+index} type="checkbox" defaultChecked={true}/><label htmlFor={"test" + index}> </label>{subelement.title}</li>
+                console.log('subelement');
+                console.log(subelement);
+                return <li key={index}><input key={index} id={"check"+index} type="checkbox" defaultChecked={false}/><label htmlFor={"check" + index}> </label>{subelement.title}</li>
             })
         }
     }
@@ -71,29 +74,44 @@ export default class ActivityElementContainer extends Component {
         window.scrollTo(0,0);
     };
 
+    hideModal = () =>{
+        this.props.hideModal();
+    }
+
+    handleClk = () =>{
+        console.log('test');
+    }
+    handleCheck = (key) => {
+
+    };
+
 
     render() {
         return (
-            <Row>
+            <Modal bsSize="large" dialogClassName="custom-modal" show={this.props.showModal} onHide={this.hideModal}>
+                <Modal.Header closeButton><h3 style={{margin:-5}} onLoad={console.log('test')}>{this.props.title}</h3></Modal.Header>
 
-                <Col md={3} sm={4}>
-                    <AutoAffix viewportOffsetTop={70} container={this}>
-                        <Well>
-                            <a style={{cursor:'pointer'}} onClick={this.scrollToTop}>Til oversigten</a>
-                            <ul>
-                                {this.getMenuElements()}
-                            </ul>
-                        </Well>
-                    </AutoAffix>
-                </Col>
 
-                <Col md={9} sm={8}>
-                    <h1>{this.props.title}</h1>
-                    <ListGroup>
-                        {this.getSubElementBoxes()}
-                    </ListGroup>
-                </Col>
-            </Row>
+                <Modal.Body>
+                    <Row>
+                        <Col md={3} sm={4}>
+                            <Well onClick={this.handleClk()} style={{cursor: 'pointer', paddingLeft:0,paddingRight:0}}>
+                                <ul>
+                                    {this.getMenuElements()}
+                                </ul>
+                            </Well>
+                        </Col>
+                        {/*Container for contents*/}
+                        <Col md={9} sm={8}>
+                            <div className="scroll-div">
+                                <ListGroup>
+                                {this.getSubElementBoxes()}
+                                </ListGroup>
+                            </div>
+                        </Col>
+                    </Row>
+                </Modal.Body>
+            </Modal>
         )
     }
 

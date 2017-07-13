@@ -1,12 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import LinkBox from "./components/LinkBox";
-import {Col, Grid, Row} from "react-bootstrap";
+import {Col, Grid, Modal, Row, Well} from "react-bootstrap";
 import AgendaTable from "./components/AgendaTable"
-import ActivityElementContainer from "./components/ActivityElementContainer";
+import ActivityElementContainer from "./components/ActivityElementModal";
 import Rip from './rest/Rip'
+import {Affix, AutoAffix} from "react-overlays";
 
 
 export default class Agenda extends Component {
+
 
     constructor(props) {
         super(props)
@@ -24,6 +26,7 @@ export default class Agenda extends Component {
 
         //Set initialState
         this.state = {
+            showModal: false,
             linksUrl: this.props.apiUrl + this.props.linksPath,
             coursePlanUrl: this.props.apiUrl + this.props.courseplansPath + specificCoursePlanUri,
             activityElementUrl: this.props.apiUrl + this.props.activityElementsPath,
@@ -39,16 +42,24 @@ export default class Agenda extends Component {
 
             Rip.getJson(this.state.activityElementUrl + "/googleid/" + activityElement.googleSheetId,
                 (json) => {
-                console.log(json);
+                    console.log(json);
                     this.setState({
                         activitySubElements: json.subElements,
-                        activeActivityElement: activityElement.title
+                        activeActivityElement: activityElement.title,
+                        showModal:true
                     });
-                    window.scrollBy(0, 650); //TODO calculate distance
                 }, (error) => {
                     console.log(error);
                 })
+        } else {
+            window.open(activityElement.hyperLink);
         }
+    };
+
+    hideModal = (e) =>{
+        this.setState({
+            showModal:false
+        })
     };
 
 //view
@@ -77,10 +88,10 @@ export default class Agenda extends Component {
                     </Col>
                 </Row>
 
-                <div>
-                    <ActivityElementContainer ref="activityContainer" title={this.state.activeActivityElement}
-                                              subElements={this.state.activitySubElements}/>
-                </div>
+
+                        <ActivityElementContainer hideModal={this.hideModal} showModal={this.state.showModal} className="scroll-div" ref="activityContainer" title={this.state.activeActivityElement}
+                                                  subElements={this.state.activitySubElements}/>
+
 
 
             </Grid>)

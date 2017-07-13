@@ -3,6 +3,7 @@ import {Table} from "react-bootstrap";
 import Rip from '../rest/Rip'
 import ActivityRow from "./ActivityRow";
 import ripple from '../ripple.svg';
+import index from '../index.css'
 
 export default class AgendaTable extends Component {
     constructor(props) {
@@ -16,7 +17,7 @@ export default class AgendaTable extends Component {
 
     fetchCoursePlan = () => {
         Rip.getJson(this.props.courseplanUrl,(json)=>{
-           this.setState({coursePlan:json, loading:"done"})
+            this.setState({coursePlan:json, loading:"done"})
         }, (error)=>{
             console.log(error);
             this.setState({loading:"fail"})
@@ -27,15 +28,26 @@ export default class AgendaTable extends Component {
     };
 
     getHeaderLine() {
-         const activityElementCount = this.state.coursePlan.courseActivityList[0].activityElementList.length;
+        if (this.state.coursePlan.headers !== null) {
+            return <thead><tr>
+            {this.state.coursePlan.headers.map((headerTitle, index)=>{
+                return <th key={index}>{headerTitle}</th>
+            })}
+            </tr>
+            </thead>
+        } else {
+            const activityElementCount = this.state.coursePlan.courseActivityList[0].activityElementList.length;
 
-        return <thead><tr>
-            <th>Aktivitet</th>
-            <th>Emner</th>
-            <th>Tid</th>
-            <th colSpan={activityElementCount}>Materiale</th>
+            return <thead>
+            <tr>
+                <th>Aktivitet</th>
+                <th>Emner</th>
+                <th>Tid</th>
+                <th colSpan={activityElementCount}>Materiale</th>
 
-        </tr></thead>
+            </tr>
+            </thead>
+        }
     }
 
 

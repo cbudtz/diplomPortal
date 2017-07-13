@@ -11,7 +11,8 @@ export default class QuizSubElement extends Component{
     render(){
         return(
         <ListGroupItem>
-            <h4>Quiz</h4>
+            <h4><input id={"check"+this.props.checkBoxId} type="checkbox" defaultChecked={true}/><label htmlFor={"check" + this.props.checkBoxId}> </label>
+                Quiz</h4>
             <Grid fluid>
                 <Row>
                     <Col sm={8}>

@@ -20,12 +20,12 @@ export default class ProgrammingBox extends Component {
             mainClass: "Main",
             files: [
                 {
-                    "fileName": "Main.java", "fileContents": "public class Main {\r\n" +
-                "public static void main(String[] args){\r\n" +
-                "System.out.println(\"Hello World!\");\r\n" +
-                "System.err.println(\"Hello Error!\");" +
-                "}" +
-                "}"
+                    "fileName": "Main.java",
+                    "fileContents": "public class Main {\r\n" +
+                    "\tpublic static void main(String[] args){\r\n" +
+                    "\t\tSystem.out.println(\"Hello!\");\r\n" +
+                    "\t}\r\n" +
+                    "}"
                 }],
             input: [],
             activeFile: 0,
@@ -96,7 +96,7 @@ export default class ProgrammingBox extends Component {
         return this.mapLines(this.state.systemErr);
     }
 
-    mapLines(array) {
+    mapLines = (array) => {
         if (array==null) return ('');
         return array.map((line, key) => {
             return <span key={key}>{line}<br/></span>
@@ -108,31 +108,35 @@ export default class ProgrammingBox extends Component {
         console.log(this.state);
         return (
             <div>
+                <div>
+                    Modificer koden så den udskriver 'Hello world!'
+                </div>
+                <h4>
+                    Kode-Editor
+                </h4>
                 <AceEditor
                     mode="java"
                     theme="eclipse"
-                    name="blah1"
-                    height="6em"
+                    name="testBox"
+                    height="15em"
                     setOptions={{
                         enableBasicAutocompletion: true,
-                        enableLiveAutocompletion: false,
+                        enableLiveAutocompletion: true,
                         enableSnippets: true,
                         showLineNumbers: true,
-                        tabSize: 4,
+                        tabSize: 10,
                     }}
                     value={this.state.files[this.state.activeFile].fileContents}
                     onChange={this.handleAceEditorChange}
 
                 />
 
-
-
-                <FormGroup controlId="codeArea">
-                    <ControlLabel>Code</ControlLabel>
-                    <FormControl componentClass="textArea" value={this.state.files[this.state.activeFile].fileContents}
-                                 rows={10} style={{fontFamily:"monospace"}}
-                                 onChange={this.handleCodeChange}/>
-                </FormGroup>
+                {/*<FormGroup controlId="codeArea">*/}
+                    {/*<ControlLabel>Code</ControlLabel>*/}
+                    {/*<FormControl componentClass="textArea" value={this.state.files[this.state.activeFile].fileContents}*/}
+                                 {/*rows={10} style={{fontFamily:"monospace"}}*/}
+                                 {/*onChange={this.handleCodeChange}/>*/}
+                {/*</FormGroup>*/}
                 <ButtonGroup>
                     <Button onClick={this.handleRunClick} className={this.state.compiling ? "disabled" : ""}>
                         {this.state.compiling ? "Running Code...":"Run Code!"}

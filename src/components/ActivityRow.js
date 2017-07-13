@@ -35,8 +35,8 @@ export default class ActivityRow extends Component{
             className += 'text-muted ';
         }
         return <tr className={className}>
-            <td>{this.props.activity.title}</td>
-            <td>{this.props.activity.description}</td>
+            <td className="td-med">{this.props.activity.title}</td>
+            <td className="td-wrap td-wide">{this.props.activity.description}</td>
             <td>{dateString}</td>
             {this.getActivityElements()}
 
