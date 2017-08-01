@@ -3,9 +3,10 @@ import {Table} from "react-bootstrap";
 import Rip from '../rest/Rip'
 import ActivityRow from "./ActivityRow";
 import ripple from '../ripple.svg';
-import index from '../index.css'
+//import index from '../index.css'
 
 export default class AgendaTable extends Component {
+    unmounting = false;
     constructor(props) {
         super(props);
         this.fetchCoursePlan();
@@ -17,12 +18,17 @@ export default class AgendaTable extends Component {
 
     fetchCoursePlan = () => {
         Rip.getJson(this.props.courseplanUrl,(json)=>{
-            this.setState({coursePlan:json, loading:"done"})
+            //Check if component is still mounted before updating - page may have changed.
+            if(!this.unmounting) this.setState({coursePlan:json, loading:"done"})
         }, (error)=>{
             console.log(error);
             this.setState({loading:"fail"})
         })
     }
+    componentWillUnmount = ()=>{
+        this.unmounting=true;
+    }
+
     handleActivityElementClick = (e, activityElement)=>{
         this.props.handleActivityElementClick(e, activityElement);
     };
@@ -30,9 +36,9 @@ export default class AgendaTable extends Component {
     getHeaderLine() {
         if (this.state.coursePlan.headers !== null) {
             return <thead><tr>
-            {this.state.coursePlan.headers.map((headerTitle, index)=>{
-                return <th key={index}>{headerTitle}</th>
-            })}
+                {this.state.coursePlan.headers.map((headerTitle, index)=>{
+                    return <th key={index}>{headerTitle}</th>
+                })}
             </tr>
             </thead>
         } else {

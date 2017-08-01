@@ -1,10 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import LinkBox from "./components/LinkBox";
-import {Col, Grid, Modal, Row, Well} from "react-bootstrap";
+import {Col, Grid, Row} from "react-bootstrap";
 import AgendaTable from "./components/AgendaTable"
 import ActivityElementContainer from "./components/ActivityElementModal";
 import Rip from './rest/Rip'
-import {Affix, AutoAffix} from "react-overlays";
 
 
 export default class Agenda extends Component {

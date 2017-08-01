@@ -11,11 +11,10 @@ export default class JwtHandler {
         if (!token) {return null}
         else {
             const claims = token.split(".")[1];
-            const decodedClams = decodeURIComponent(escape(window.atob(claims)));
+            const decodedClams = decodeURIComponent(encodeURI(window.atob(claims)));
             const jsonClaims = JSON.parse(decodedClams);
             console.log("found claims:");
             console.log(jsonClaims);
-            //what??
             return jsonClaims.user;
         }
     }

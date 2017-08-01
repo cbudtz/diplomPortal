@@ -21,7 +21,7 @@ export default class TopMenu extends Component {
         } else {
             //Send User to CampusnetLogin
             const redirectUrl = Config.ApiPath ? Config.ApiPath + Config.campusNetServiceUrl : Config.campusNetServiceUrl;
-            location.replace(redirectUrl)
+            location.replace(redirectUrl);
         }
     };
 
@@ -45,12 +45,14 @@ export default class TopMenu extends Component {
 
     getNavContent = () => {
         var content = this.props.menuItems.map((nav, no) => {
-            if (nav.type === "NavItem") {
-                return <NavItem key={nav.id} eventKey={nav.id}
-                                active={this.state.active === nav.id}>{nav.text}</ NavItem>
+            if (nav.type === "NavText") {
+                return <NavItem key={nav.id} eventKey={nav.id}/>
+            } else if (nav.type === "NavItem") {
+                return <NavItem key={no} eventKey={nav.id}
+                                active={this.state.active.component === nav.id.component}>{nav.text}</ NavItem>
             } else if (nav.type === "NavDropDown") {
                 var items = nav.items.map((item, no) => {
-                    return (<MenuItem key={item.id} eventKey={item.id}>{item.text}</MenuItem>)
+                    return (<MenuItem key={no} eventKey={item.id}>{item.text}</MenuItem>)
                 })
                 return (<NavDropdown key={nav.id} id={nav.id} title={nav.text}>
                     {items}

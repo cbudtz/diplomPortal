@@ -9,7 +9,7 @@ import 'brace/theme/eclipse';
 import 'brace/ext/language_tools';
 import 'brace/ext/searchbox';
 
-import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from "react-bootstrap";
+import {Button, ButtonGroup, Panel, PanelGroup} from "react-bootstrap";
 import update from 'immutability-helper';
 
 export default class ProgrammingBox extends Component {

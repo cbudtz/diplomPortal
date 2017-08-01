@@ -2,12 +2,35 @@ import React, {Component} from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import TopMenu from "./TopMenu.js";
-import Agenda from "./Agenda.jsx";
+import Agenda from "./AgendaPage.jsx";
 import JwtHandler from "./jwthandler";
-import Rip from "./rest/Rip"
+import LoginPage from "./LoginPage";
+import CourseInfoPage from "./CourseInfoPage";
+import SyllabusPage from "./SyllabusPage";
+import ForumPage from "./ForumPage";
+import CourseAdminPage from "./CourseAdminPage";
+import PortalAdminPage from "./PortalAdminPage";
 
 
 export default class App extends Component {
+    generateAdminDropDown = (user)=>{
+        let portalAdmin = false;
+        user.roles.forEach((role)=>{
+            if (role.roleName === "PortalAdmin") {portalAdmin = true}
+        })
+        let courseAdmin = false;
+        user.roles.forEach((role)=>{
+            if (role.roleName ==="CourseAdmin") {courseAdmin = true}
+        })
+        return {
+            type: "NavDropDown", id: 10, text: "Admin", items: [
+                {type: "MenuItem", id: {component: "CourseAdmin"}, text: "Course Admin"},
+                {type: "MenuItem", id: {component: "PortalAdmin"}, text: "Portal Admin"}
+            ]
+        }
+
+    };
+
     constructor(props) {
         super(props);
         const user = JwtHandler.getUser();
@@ -18,17 +41,20 @@ export default class App extends Component {
         if (user) {
             console.log("User Found")
             let agendaDropDown = this.generateAgendaDropDown(user.agendaInfoMap, user.activeAgenda);
+            let adminDropDown = this.generateAdminDropDown(user);
             this.state = {
                 user: user,
                 navbar: [
                     agendaDropDown
                     ,
                     {type: "NavItem", id: {period: "F17", course: "02324", component: "Agenda"}, text: "Agenda"},
-                    {type: "NavItem", id: "F17/02324/KursusOversigt", text: "Kursus oversigt"},
-                    {type: "NavItem", id: "F17/02324/Pensum", text: "Pensum"},
-                    {type: "NavItem", id: "F17/02324/Forum", text: "Forum"},
+                    {type: "NavItem", id: {component: "CourseInfo"}, text: "Kursus oversigt"},
+                    {type: "NavItem", id: {component: "Syllabus"}, text: "Pensum", component: "Syllabus"},
+                    {type: "NavItem", id: {component: "Forum"}, text: "Forum", component: "Forum"},
+                    adminDropDown
+                ]
 
-                ],
+                ,
                 avatar: {id: user.userName},
                 pages: {
                     0: {period: "F17", course: "02324", component: "Agenda"},
@@ -45,19 +71,14 @@ export default class App extends Component {
         } else {
             this.state = {
                 user: null,
-                navbar: [{
-                    type: "NavDropDown", id: 0, text: "F17 02324 Videregående Programmering", items: [
-                        {type: "MenuItem", id: 1, text: "F17 62577 Datakommunikation"},
-                        {type: "MenuItem", id: 2, text: "Gamle Kurser"},
-                        {type: "MenuItem", id: 3, text: "Andre Kurser"}
-                    ]
-                }],
+                navbar: [{type:"NavItem", id:-1, text:"Please Login"},
+                ],
                 avatar: {id: null},
                 pages: {
                     0: {period: "F17", course: "02324", component: "Agenda"},
                     1: {period: "F17", course: "02324", component: ""}
                 },
-                activePage: {period: "F17", course: "02324", component: "Agenda"},
+                activePage: {component: "Login"},
                 course: {
                     courseId: "02324F17",
                     courseName: "Videregående programmering",
@@ -72,16 +93,11 @@ export default class App extends Component {
 
         return {
             type: "NavDropDown", id: 0, text: "F17 02324 Videregående Programmering", items: [
-            {type: "MenuItem", id: 1, text: "F17 62577 Datakommunikation"},
-            {type: "MenuItem", id: 2, text: "Gamle Kurser"},
-            {type: "MenuItem", id: 3, text: "Andre Kurser"}
-        ]
+                {type: "MenuItem", id: 1, text: "F17 62577 Datakommunikation"},
+                {type: "MenuItem", id: 2, text: "Gamle Kurser"},
+                {type: "MenuItem", id: 3, text: "Andre Kurser"}
+            ]
         }
-    }
-    test = (e) => {
-        this.setState({
-            color:"Yellow"
-        })
     }
 
     onMenuSelect = (e)=>{
@@ -93,14 +109,30 @@ export default class App extends Component {
     onLogout = (hard)=>{
         console.log("Logging out")
         JwtHandler.clearUser();
-        this.setState({user: null , avatar: {id:null}, navbar: [{
-            type: "NavDropDown", id: 0, text: "F17 02324 Videregående Programmering", items: [
-                {type: "MenuItem", id: 1, text: "F17 62577 Datakommunikation"},
-                {type: "MenuItem", id: 2, text: "Gamle Kurser"},
-                {type: "MenuItem", id: 3, text: "Andre Kurser"}
-            ]
-        }]});
+        this.setState({user: null , avatar: {id:null}, navbar: [{type:"NavItem", id:-1, text:"Please Login"},
+        ], activePage:{component:"Login"}
+        });
     }
+
+    getComponent = ()=> {
+        const component = this.state.activePage.component;
+        if (component === "Agenda") {
+            return <Agenda course={this.state.course} apiUrl={this.props.apiUrl}/>
+        } else if (component === "CourseInfo") {
+            return <CourseInfoPage course={this.state.course} apiUrl={this.props.apiUrl}/>
+        } else if (component === "Syllabus") {
+            return <SyllabusPage course={this.state.course} apiUrl={this.props.apiUrl}/>
+        } else if (component === "Forum") {
+            return <ForumPage course={this.state.course} apiUrl={this.props.apiUrl}/>
+        } else if (component === "CourseAdmin") {
+            return <CourseAdminPage course={this.state.course} apiUrl={this.props.apiUrl}/>
+        } else if (component === "PortalAdmin") {
+            return <PortalAdminPage course={this.state.course} apiUrl={this.props.apiUrl}/>
+        } else  {
+            return <LoginPage course={this.state.course} apiUrl={this.props.apiUrl}/>
+        }
+
+    };
 
     render() {
         console.log("main state:")
@@ -109,10 +141,10 @@ export default class App extends Component {
             <div className="App">
 
                 <TopMenu apiUrl={this.props.apiUrl} menuItems={this.state.navbar} avatar={this.state.avatar}
-                         activeId="F17/02324/Agenda" onSelect={this.onMenuSelect} onLogout={this.onLogout}
+                         activeId={this.state.activePage} onSelect={this.onMenuSelect} onLogout={this.onLogout}
                 />
+                {this.getComponent()}
 
-                <Agenda course={this.state.course} apiUrl={this.props.apiUrl}/>
                 <img src={logo} className="App-logo" alt="logo" />
 
             </div>
