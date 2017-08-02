@@ -8,10 +8,6 @@ import CourseAdminMenu from "./components/CourseAdminMenu";
 import CourseAdminMain from "./components/CourseAdminMain";
 
 export default class CourseAdminPage extends Component{
-    constructor(props){
-        super(props);
-
-    }
 
     render(){
         return <Grid fluid>

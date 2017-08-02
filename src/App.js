@@ -22,12 +22,16 @@ export default class App extends Component {
         user.roles.forEach((role)=>{
             if (role.roleName ==="CourseAdmin") {courseAdmin = true}
         })
-        return {
-            type: "NavDropDown", id: 10, text: "Admin", items: [
-                {type: "MenuItem", id: {component: "CourseAdmin"}, text: "Course Admin"},
-                {type: "MenuItem", id: {component: "PortalAdmin"}, text: "Portal Admin"}
-            ]
-        }
+        if (courseAdmin || portalAdmin) {
+            var adminMenu = {type: "NavDropDown", id: 10, text: "Admin", items: []}
+            if (courseAdmin) {
+                adminMenu.items.push({type: "MenuItem", id: {component: "CourseAdmin"}, text: "Course Admin"})
+            }
+            if (portalAdmin) {
+                adminMenu.items.push({type: "MenuItem", id: {component: "PortalAdmin"}, text: "Portal Admin"})
+            }
+            return adminMenu;
+        } else return {};
 
     };
 
