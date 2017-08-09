@@ -34,7 +34,7 @@ export default class Rip {
                 callback(text);
             })
         }).catch((response)=>{
-            catchback({message:"Rip: Error while fetching " + response.message, response: response});
+            catchback({message:"Rip: Error while GET'ing " + response.message, response: response});
         })
     }
 
@@ -46,17 +46,36 @@ export default class Rip {
     }
 
     static post = (url, json, callback, catchback) => {
+        const token = JwtHandler.getToken();
         fetch(url, {
             mode: 'cors',
             method: 'POST',
             body: JSON.stringify(json),
             headers: new Headers({
-                'Content-type': 'application/json'
+                'Content-type' : 'application/json',
+                'authorization' : 'Bearer ' + token
             })
         }).then((response) => {
             Rip.handleJSON(response,callback,catchback);
         }).catch((response) => {
-            catchback({message: "Rip: Error while fetching: " + response.message, response: response});
+            catchback({message: "Rip: Error while POST'ing: " + response.message, response: response});
+        })
+    }
+
+    static postForString = (url,json,callback, catchback)=>{
+        const token = JwtHandler.getToken();
+        fetch(url, {
+            mode: 'cors',
+            method: 'POST',
+            body: JSON.stringify(json),
+            headers: new Headers({
+                'Content-type' : 'application/json',
+                'authorization' : 'Bearer ' + token
+            })
+        }).then((response) => {
+            callback(response);
+        }).catch((response) => {
+            catchback({message: "Rip: Error while POST'ing: " + response.message, response: response});
         })
     }
 
@@ -75,4 +94,20 @@ export default class Rip {
         })
     }
 
+    static put = (url,json,callback,catchback) => {
+        const token = JwtHandler.getToken();
+        fetch(url, {
+            mode: 'cors',
+            method: 'PUT',
+            body: JSON.stringify(json),
+            headers: new Headers({
+                'Content-type' : 'application/json',
+                'authorization' : 'Bearer ' + token
+            })
+        }).then((response) => {
+            Rip.handleJSON(response,callback,catchback);
+        }).catch((response) => {
+            catchback({message: "Rip: Error while Put'ing: " + response.message, response: response});
+        })
+    }
 }

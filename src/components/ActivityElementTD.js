@@ -12,7 +12,7 @@ export default class ActivityElementTD extends Component {
     };
 
     render() {
-        if (this.props.activityElement.hyperLink) {
+        if (this.props.activityElement.activityElementType!=='Text') {
             return this.linkElement()
         } else {
             return (<td className="td-wrap">{this.props.activityElement.title}</td>)
@@ -22,8 +22,8 @@ export default class ActivityElementTD extends Component {
 
     linkElement() {
         return (<td className="td-wrap">
-            <a style={{cursor: "pointer"}} target="_blank" onClick={(e)=>this.handleActivityElementClick(e)} id={this.props.activityElement.hyperLink}>
-                {this.props.activityElement.title}</a>
+            <a style={{cursor: "pointer"}} target="_blank" onClick={(e)=>this.handleActivityElementClick(e)} id={this.props.activityElement.id}>
+                {this.props.activityElement.title} </a>
         </td>);
     }
 

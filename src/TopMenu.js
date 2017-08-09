@@ -28,6 +28,8 @@ export default class TopMenu extends Component {
 
     handleNavSelect = (eventKey) => {
         this.setState({active: eventKey})
+        console.log("TopMenu Selection:" )
+        console.log(eventKey)
         this.props.onSelect(eventKey);
     };
 

@@ -6,43 +6,28 @@ import ripple from '../ripple.svg';
 //import index from '../index.css'
 
 export default class AgendaTable extends Component {
-    unmounting = false;
     constructor(props) {
         super(props);
-        this.fetchCoursePlan();
         this.state = {
             coursePlan: {courseActivityList:[{activityElementList:[]}]},
-            loading :true
+            loading :"done"
         }
     }
 
-    fetchCoursePlan = () => {
-        Rip.getJson(this.props.courseplanUrl,(json)=>{
-            //Check if component is still mounted before updating - page may have changed.
-            if(!this.unmounting) this.setState({coursePlan:json, loading:"done"})
-        }, (error)=>{
-            console.log(error);
-            this.setState({loading:"fail"})
-        })
-    }
-    componentWillUnmount = ()=>{
-        this.unmounting=true;
-    }
-
-    handleActivityElementClick = (e, activityElement)=>{
-        this.props.handleActivityElementClick(e, activityElement);
+    handleActivityElementClick = (activity, activityElement)=>{
+        this.props.handleActivityElementClick(activity, activityElement);
     };
 
     getHeaderLine() {
-        if (this.state.coursePlan.headers !== null) {
+        if (this.props.coursePlan.headers !== null) {
             return <thead><tr>
-                {this.state.coursePlan.headers.map((headerTitle, index)=>{
+                {this.props.coursePlan.headers.map((headerTitle, index)=>{
                     return <th key={index}>{headerTitle}</th>
                 })}
             </tr>
             </thead>
         } else {
-            const activityElementCount = this.state.coursePlan.courseActivityList[0].activityElementList.length;
+            const activityElementCount = this.props.coursePlan.courseActivityList[0].activityElementList.length;
 
             return <thead>
             <tr>
@@ -58,7 +43,7 @@ export default class AgendaTable extends Component {
 
 
     getActivities() {
-        return this.state.coursePlan.courseActivityList.map((activity, index)=>{
+        return this.props.coursePlan.courseActivityList.map((activity, index)=>{
             return <ActivityRow key={index} activity={activity} handleActivityElementClick={this.handleActivityElementClick}/>
         })
     }
@@ -67,12 +52,7 @@ export default class AgendaTable extends Component {
 
 
     render() {
-        console.log(this.state)
-        if (this.state.loading===true){
-            return (<Table>
-                <tbody><tr><td><img src={ripple} alt="loading..."/></td></tr></tbody>
-            </Table>)
-        } else if (this.state.loading==="done") {
+        if (this.props.coursePlan && this.props.coursePlan.headers) {
             return (
                 <Table responsive hover>
 
@@ -85,7 +65,7 @@ export default class AgendaTable extends Component {
                 </Table>
             )
         } else {
-            return (<Table><tbody><tr><td>Load failed!</td></tr></tbody></Table>)
+            return (<Table><tbody><tr><td>Loading</td></tr></tbody></Table>)
         }
 
 

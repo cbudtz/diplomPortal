@@ -6,7 +6,7 @@ import ActivityElementTD from "./ActivityElementTD";
 
 export default class ActivityRow extends Component{
     handleActivityElementClick = (e, activityElement)=>{
-        this.props.handleActivityElementClick(e, activityElement);
+        this.props.handleActivityElementClick(this.props.activity, activityElement);
     };
 
     getActivityElements() {

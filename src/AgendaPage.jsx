@@ -3,31 +3,16 @@ import LinkBox from "./components/LinkBox";
 import {Col, Grid, Row} from "react-bootstrap";
 import AgendaTable from "./components/AgendaTable"
 import ActivityElementContainer from "./components/ActivityElementModal";
-import Rip from './rest/Rip'
-
 
 export default class Agenda extends Component {
 
 
     constructor(props) {
         super(props)
-        var specificCoursePlanUri = ''
-        if (this.props.course.coursePlanSource === 'GoogleSheet') {
-            console.log("fetching googleCoursePlan");
-            specificCoursePlanUri += this.props.googlepath;
-            specificCoursePlanUri += "/id/";
-            specificCoursePlanUri += this.props.course.coursePlanId;
-        } else {
-            specificCoursePlanUri += "/id/";
-            specificCoursePlanUri += this.props.course.coursePlanId;
-        }
-
-
         //Set initialState
         this.state = {
             showModal: false,
             linksUrl: this.props.apiUrl + this.props.linksPath,
-            coursePlanUrl: this.props.apiUrl + this.props.courseplansPath + specificCoursePlanUri,
             activityElementUrl: this.props.apiUrl + this.props.activityElementsPath,
             activitySubElements: [],
             activeActivityElement: ""
@@ -35,31 +20,19 @@ export default class Agenda extends Component {
 
     }
 
-    handleActivityClick = (e, activityElement) => {
+    handleActivityClick = (activity, activityElement) => {
+        this.props.handleActivityClick(activity,activityElement);
         const type = activityElement.activityElementType;
-        if (type === "GoogleSheet") {
 
-            Rip.getJson(this.state.activityElementUrl + "/googleid/" + activityElement.googleSheetId,
-                (json) => {
-                    console.log(json);
-                    this.setState({
-                        activitySubElements: json.subElements,
-                        activeActivityElement: activityElement.title,
-                        showModal:true
-                    });
-                }, (error) => {
-                    console.log(error);
-                })
-        } else {
-            window.open(activityElement.hyperLink);
-        }
     };
 
     hideModal = (e) =>{
-        this.setState({
-            showModal:false
-        })
+        this.props.hideModal();
     };
+
+    handleSubElementCheck = (checked, id)=>{
+        this.props.handleSubElementCheck(checked, this.props.activeActivityId, this.props.activeActivityElementId, id);
+    }
 
 //view
     render() {
@@ -68,7 +41,7 @@ export default class Agenda extends Component {
             ((this.props.user === null) ?
                 "/default" :
                 "/" + this.props.user);
-        const courseLinkUrl = this.state.linksUrl + "?user=" + this.props.user + "&course=" + this.props.course.courseId;
+        const courseLinkUrl = this.state.linksUrl + "?user=" + this.props.user + "&course=" + this.props.course.id;
         return (
             <Grid fluid>
                 <Row>
@@ -82,14 +55,16 @@ export default class Agenda extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <AgendaTable courseplanUrl={this.state.coursePlanUrl}
+                        <AgendaTable coursePlan={this.props.coursePlan}
                                      handleActivityElementClick={this.handleActivityClick}/>
                     </Col>
                 </Row>
 
 
-                        <ActivityElementContainer hideModal={this.hideModal} showModal={this.state.showModal} className="scroll-div" ref="activityContainer" title={this.state.activeActivityElement}
-                                                  subElements={this.state.activitySubElements}/>
+                        <ActivityElementContainer hideModal={this.hideModal} showModal={this.props.showModal}
+                                                  className="scroll-div" ref="activityContainer" title={this.props.activeActivityElement}
+                                                  handleSubElementCheck={this.handleSubElementCheck}
+                                                  subElements={this.props.activitySubElements}/>
 
 
 
@@ -107,12 +82,17 @@ Agenda.propTypes = {
     activityElementsPath: PropTypes.string,
     googlepath: PropTypes.string,
     user: PropTypes.string,
+    coursePlan: PropTypes.any,
+    activeActivityElement: PropTypes.any,
     course: PropTypes.shape({
-        courseId: PropTypes.string.isRequired,
-        courseName: PropTypes.string,
+        id: PropTypes.string,
+        text: PropTypes.string,
         coursePlanId: PropTypes.string,
         coursePlanSource: PropTypes.oneOf(['GoogleSheet', 'Mongo'])
-    }).isRequired
+    }).isRequired,
+    handleActivityClick: PropTypes.func,
+    handleSubElementCheck: PropTypes.func,
+    hideModal: PropTypes.func
 }
 
 Agenda.defaultProps = {

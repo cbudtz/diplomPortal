@@ -11,6 +11,7 @@ import ContentEditable from "react-contenteditable";
 import QuizSubElement from "./QuizSubElement";
 import ConceptQuestionSubElement from "./ConceptQuestionSubElement";
 import '../index.css'
+import CheckboxComp from "./CheckboxComp";
 
 export default class ActivityElementContainer extends Component {
 
@@ -22,11 +23,12 @@ export default class ActivityElementContainer extends Component {
     }
 
     getSubElementBoxes = () => {
-        console.log(this.props.subElements)
+        console.log("ActivityElementContainer Props:")
+        console.log(this.props)
         if (this.props.subElements) {
             return this.props.subElements.map((subElement, index) => {
                 if (subElement.subElementType === 'Text') {
-                    return <TextSubElement key={index} checkBoxId={index} header={subElement.title} text={subElement.content} onCheck={this.handleCheck}/>
+                    return <TextSubElement key={index} checkBoxId={subElement.id} header={subElement.title} text={subElement.content} onCheck={this.handleCheck} checked={subElement.checked}/>
                 } else if (subElement.subElementType === 'Pop_Out_Link') {
                     return <PopOutLinkSubElement key={index} checkBoxId={index} header={subElement.title} link={subElement.hyperLink}/>
                 } else if (subElement.subElementType === 'Code') {
@@ -47,11 +49,11 @@ export default class ActivityElementContainer extends Component {
                         </Grid>
                     </ListGroupItem>)
                 } else if (subElement.subElementType === 'Embedded_Link'){
-                    return <EmbeddedLinkSubElement checkBoxId={index} key={index} title={subElement.title} link={subElement.hyperLink}/>
+                    return <EmbeddedLinkSubElement checkBoxId={subElement.id} key={index} title={subElement.title} link={subElement.hyperLink}/>
                 } else if (subElement.subElementType === 'Concept_Question') {
-                    return <ConceptQuestionSubElement checkBoxId={index}/>
+                    return <ConceptQuestionSubElement checkBoxId={subElement.id}/>
                 } else if(subElement.subElementType==='Quiz') {
-                    return <QuizSubElement checkBoxId={index}/>
+                    return <QuizSubElement checkBoxId={subElement.id}/>
                 } else { //placeholder for now...
                     return <ListGroupItem key={index} header={subElement.title}>Coming Sooon!</ListGroupItem>
                 }
@@ -64,8 +66,8 @@ export default class ActivityElementContainer extends Component {
         if (this.props.subElements) {
             return this.props.subElements.map((subelement, index)=>{
                 console.log('subelement');
-                console.log(subelement);
-                return <li key={index}><input key={index} id={"check"+index} type="checkbox" defaultChecked={false}/><label htmlFor={"check" + index}> </label>{subelement.title}</li>
+                console.log(subelement.id);
+                return <li key={index}><CheckboxComp id={subelement.id} checked={subelement.checked} onCheck={(checked, id)=>this.handleCheck(checked, id)}/>{subelement.title}</li>
             })
         }
     }
@@ -81,8 +83,9 @@ export default class ActivityElementContainer extends Component {
     handleClk = () =>{
         console.log('test');
     }
-    handleCheck = (key) => {
-
+    handleCheck = (checked, id) => {
+        console.log("Checked AEM: " + checked)
+        this.props.handleSubElementCheck(checked, id)
     };
 
 
@@ -126,6 +129,6 @@ ActivityElementContainer.propTypes = {
             hyperLink: PropTypes.string,
             id: PropTypes.string,
             subElementType: PropTypes.oneOf(['Text', 'Embedded_Link', 'Pop_Out_Link', 'Code', 'Quiz', 'Concept_Question'])
-        }))
-
+        })),
+    handleSubElementCheck: PropTypes.func
 }

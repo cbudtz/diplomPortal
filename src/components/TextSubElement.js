@@ -4,20 +4,19 @@
 import React, {Component} from 'react'
 import {Col, Glyphicon, Grid, ListGroupItem, Row} from "react-bootstrap";
 import ContentEditable from "react-contenteditable";
+import CheckboxComp from "./CheckboxComp";
 
 export default class TextSubElement extends Component{
     constructor(props){
         super(props)
-        this.state={
-            html:"Dages noter"
-        }
+
     }
 
     render(){
         return (
             <ListGroupItem>
                 <h4 className="list-group-item-heading">
-                    <input id={"check"+this.props.checkBoxId} type="checkbox" defaultChecked={true}/><label htmlFor={"check" + this.props.checkBoxId}> </label>
+                    <CheckboxComp id={this.props.checkBoxId} checked={this.props.checked} onCheck={this.props.onCheck}/>
                     {this.props.header}
                 </h4>
 
@@ -29,7 +28,7 @@ export default class TextSubElement extends Component{
                         </Col>
                         <Col sm={4}>
                             <h5><Glyphicon glyph="pencil"/><b>Noter</b></h5>
-                            <ContentEditable html={this.state.html} onChange={this.handleChange}/>
+                            <ContentEditable html={this.props.notes} onChange={this.handleChange}/>
 
                         </Col>
                     </Row>
@@ -38,3 +37,5 @@ export default class TextSubElement extends Component{
         )
     }
 }
+
+TextSubElement
