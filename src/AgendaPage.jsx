@@ -34,6 +34,10 @@ export default class Agenda extends Component {
         this.props.handleSubElementCheck(checked, this.props.activeActivityId, this.props.activeActivityElementId, id);
     }
 
+    handleNotes = (text, id)=>{
+        this.props.handleSubElementNotes(text, this.props.activeActivityId, this.props.activeActivityElementId, id);
+    }
+
 //view
     render() {
 
@@ -64,6 +68,7 @@ export default class Agenda extends Component {
                         <ActivityElementContainer hideModal={this.hideModal} showModal={this.props.showModal}
                                                   className="scroll-div" ref="activityContainer" title={this.props.activeActivityElement}
                                                   handleSubElementCheck={this.handleSubElementCheck}
+                                                  handleNotes={this.handleNotes}
                                                   subElements={this.props.activitySubElements}/>
 
 
@@ -92,6 +97,7 @@ Agenda.propTypes = {
     }).isRequired,
     handleActivityClick: PropTypes.func,
     handleSubElementCheck: PropTypes.func,
+    handleSubElementNotes: PropTypes.func,
     hideModal: PropTypes.func
 }
 

@@ -3,6 +3,7 @@
  */
 import React, {Component} from 'react'
 import {Glyphicon, ListGroupItem} from "react-bootstrap";
+import CheckboxComp from "./CheckboxComp";
 
 export default class PopOutLinkSubElement extends Component{
     itemClicked = ()=>{
@@ -10,8 +11,9 @@ export default class PopOutLinkSubElement extends Component{
     };
 
     render(){
+        console.log()
         return (<ListGroupItem>
-            <h4 style={{cursor:'pointer'}}><input id={"check"+this.props.checkBoxId} type="checkbox" defaultChecked={true}/><label htmlFor={"check" + this.props.checkBoxId}> </label>
+            <h4 style={{cursor:'pointer'}}><CheckboxComp checked={this.props.checked} onCheck={this.props.onCheck}/>
                 <a onClick={this.itemClicked}>{this.props.header} <Glyphicon glyph="new-window" /></a></h4>
 
         </ListGroupItem>)

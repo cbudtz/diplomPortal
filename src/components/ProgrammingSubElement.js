@@ -1,15 +1,16 @@
 /**
- * Created by Christian on 31-05-2017.
+ * Created by Christian on 14-08-2017.
  */
 import React, {Component,PropTypes} from 'react'
 import {Col, Glyphicon, Grid, ListGroupItem, Row} from "react-bootstrap";
 import ContentEditable from "react-contenteditable";
 import CheckboxComp from "./CheckboxComp";
+import ProgrammingBox from "./ProgrammingBox";
 
-export default class TextSubElement extends Component{
+export default class ProgrammingSubElement extends Component{
     handleChange =  (e)=>{
         this.props.onChange(e.target.value, this.props.textBoxId)
-};
+    };
     constructor(props){
         super(props)
 
@@ -26,8 +27,8 @@ export default class TextSubElement extends Component{
                 <Grid fluid>
                     <Row>
                         <Col sm={8}>
+                            <ProgrammingBox code={this.props.code} compileUrl={this.props.compileUrl}/>
 
-                            {this.props.text}
                         </Col>
                         <Col sm={4}>
                             <h5><Glyphicon glyph="pencil"/><b>Noter</b></h5>
@@ -41,8 +42,12 @@ export default class TextSubElement extends Component{
     }
 }
 
-TextSubElement.propTypes={
+ProgrammingSubElement.propTypes={
+    header: PropTypes.string,
+    checkBoxId:PropTypes.string,
+    onCheck:PropTypes.func,
     textBoxId: PropTypes.string,
     notes: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    compileUrl: PropTypes.string
 }

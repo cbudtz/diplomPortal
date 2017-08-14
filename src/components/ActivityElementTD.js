@@ -2,6 +2,7 @@
  * Created by Christian on 30-05-2017.
  */
 import React, {Component, PropTypes} from 'react';
+import {ProgressBar} from "react-bootstrap";
 
 
 export default class ActivityElementTD extends Component {
@@ -21,9 +22,13 @@ export default class ActivityElementTD extends Component {
 
 
     linkElement() {
+        let now = (parseFloat(this.props.activityElement.progress) * 100).toFixed(0);
+
+        let showProgress = this.props.activityElement.subElements.length > 0;
         return (<td className="td-wrap">
             <a style={{cursor: "pointer"}} target="_blank" onClick={(e)=>this.handleActivityElementClick(e)} id={this.props.activityElement.id}>
                 {this.props.activityElement.title} </a>
+            {showProgress &&  <ProgressBar bsStyle={(now >= 100) ? "success": ""}  now={now} label={`${now}%`}/>}
         </td>);
     }
 

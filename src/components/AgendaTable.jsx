@@ -65,7 +65,7 @@ export default class AgendaTable extends Component {
                 </Table>
             )
         } else {
-            return (<Table><tbody><tr><td>Loading</td></tr></tbody></Table>)
+            return (<Table><tbody><tr><td>No courseplan</td></tr></tbody></Table>)
         }
 
 
@@ -76,7 +76,6 @@ export default class AgendaTable extends Component {
 }
 
 AgendaTable.propTypes = {
-    courseplanUrl: PropTypes.string.isRequired,
     user: PropTypes.string,
     handleActivityElementClick: PropTypes.func
 

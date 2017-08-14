@@ -18,7 +18,11 @@ export default class Rip {
                 "authorization" : "Bearer " + jwtToken
             })
         }).then((response) => {
-            Rip.handleJSON(response,callback,catchback);
+            if(response.status!==200){
+                catchback(response)
+            } else {
+                Rip.handleJSON(response, callback, catchback);
+            }
         }).catch((response) => {
             catchback({message: "Rip: Error while fetching: " + response.message, response: response});
         })

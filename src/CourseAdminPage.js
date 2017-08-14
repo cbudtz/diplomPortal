@@ -42,7 +42,8 @@ export default class CourseAdminPage extends Component{
             })
             this.setState({
                 courseList: json,
-                currentCourse: newCurrentCourse
+                currentCourse: newCurrentCourse,
+                syncError: false
             });
         }
         this.fetchUserList(this.state.currentCourse.id);
@@ -141,9 +142,22 @@ export default class CourseAdminPage extends Component{
             })
     }
     syncCourseCurrentCoursePlan = ()=> {
+        this.setState({syncing:true})
         Rip.postForString(this.currentCourseUrl() + '/syncCoursePlan', null,
-            ()=>{
-                this.getCourses();
+            (response)=>{
+
+                if (response.status==500){
+                    response.text().then((text)=>{
+                        this.setState({syncError: text})
+                    })
+                    this.setState({syncError: response.text, syncing:false})
+                } else {
+                    this.getCourses();
+                    this.setState({syncError: false, syncing:false})
+                }
+            },
+            (errorMsg)=>{
+                this.setState({syncError: errorMsg, syncining:false})
             })
     }
 
@@ -162,7 +176,9 @@ export default class CourseAdminPage extends Component{
                                      usesGoogleSheet={(checked)=>this.updateCourseUsesGoogleSheet(checked)}
                                      newGoogleSheetId={(sheetId)=>this.newGoogleSheetId(sheetId)}
                                      roleChecked={(userId,role,value)=>this.handleRoleCheck(userId,role,value)}
-                                    syncCoursePlan={()=>this.syncCourseCurrentCoursePlan()}/>
+                                     syncError={this.state.syncError}
+                                    syncCoursePlan={()=>this.syncCourseCurrentCoursePlan()}
+                                    syncing={this.state.syncing}/>
                 </Col>
             </Row>
         </Grid>

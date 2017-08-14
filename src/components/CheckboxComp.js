@@ -31,6 +31,6 @@ CheckboxComp.propTypes = {
 
 CheckboxComp.defaultProps = {
     checked: false,
-    onCheck: ()=>{console.log('CheckbocComp: onCheck not set')}
+    onCheck: ()=>{console.log('CheckboxComp: onCheck not set')}
 
 }

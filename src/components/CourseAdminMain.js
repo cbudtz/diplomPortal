@@ -9,6 +9,7 @@ import {
 import CheckboxComp from "./CheckboxComp";
 import EditableHeadLine from "./EditableHeadLine";
 import EditableText from "./EditableText";
+import ripple from '../ripple.svg'
 
 export default class CourseAdminMain extends Component{
 
@@ -121,7 +122,11 @@ export default class CourseAdminMain extends Component{
                             <br/>
                                 Anvend googleSheet til KursusPlan: <CheckboxComp onCheck={this.handleUsesGoogleSheet} checked={usesGoogleSheet}/>
                         </Form>
-                        <Button onClick={()=>this.props.syncCoursePlan()}>Synkronisér Kursusplan</Button>
+                        <Button onClick={()=>this.props.syncCoursePlan()}  disabled={this.props.syncing}>
+                            {this.props.syncing ? <span>Synkroniserer kursusplan</span> :
+                            <span>Synkronisér Kursusplan</span>}</Button>
+                        {this.props.syncing && <img src={ripple} alt="loading"/>}
+                        {this.props.syncError && <div>{this.props.syncError}</div>}
                     </div>
                 </Panel>
                 <Panel header={<h3>Administer brugere</h3>} className="panel-default">
@@ -214,7 +219,9 @@ CourseAdminMain.propTypes = {
     newShortAndTitle: PropTypes.func,
     usesGoogleSheet: PropTypes.func,
     newGoogleSheetId: PropTypes.func,
-    syncCoursePlan: PropTypes.func
+    syncError: PropTypes.any,
+    syncCoursePlan: PropTypes.func,
+    syncing: PropTypes.any
 
 
 }
