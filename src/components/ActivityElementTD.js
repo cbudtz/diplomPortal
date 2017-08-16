@@ -28,7 +28,9 @@ export default class ActivityElementTD extends Component {
         return (<td className="td-wrap">
             <a style={{cursor: "pointer"}} target="_blank" onClick={(e)=>this.handleActivityElementClick(e)} id={this.props.activityElement.id}>
                 {this.props.activityElement.title} </a>
-            {showProgress &&  <ProgressBar bsStyle={(now >= 100) ? "success": ""}  now={now} label={`${now}%`}/>}
+            {showProgress &&  <ProgressBar bsStyle={(now >= 100) ? "success": "info"}  now={now} label={
+                <span style={{color:"black"}}>{now}%</span>
+            }/>}
         </td>);
     }
 

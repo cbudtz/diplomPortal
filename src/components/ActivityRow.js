@@ -15,6 +15,12 @@ export default class ActivityRow extends Component{
         })
     }
 
+    checkIfDone(){
+        this.props.activity.activityElementList.forEach((activityElement)=>{
+
+        })
+    }
+
     render(){
         const date = new Date(this.props.activity.endDate);
         var dateString = ''

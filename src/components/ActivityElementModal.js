@@ -43,7 +43,7 @@ export default class ActivityElementContainer extends Component {
                     //TODO move to containerElement
                     return <ProgrammingSubElement key={index} checkBoxId={subElement.id} checked={subElement.checked} onCheck={this.handleCheck}
                                                   header={subElement.title}
-                                                  code={subElement.code}
+                                                  code={subElement.content}
                                                   textBoxId={subElement.id} onChange={this.handleTextBoxChange} notes={subElement.notes}
                     />
                 } else if (subElement.subElementType === 'Embedded_Link'){
@@ -122,7 +122,10 @@ export default class ActivityElementContainer extends Component {
                                 <ul>
                                     {this.getMenuElements()}
                                 </ul>
-                                <ProgressBar bsStyle={(now >= 100) ? "success": ""}  now={now} label={`${now}%`}/>
+                                <ProgressBar bsStyle={(now >= 100) ? "success": "info"}  now={now} label={
+
+                                    <span style={{color:"black"}}>{now}%</span>
+                                }/>
                             </Well>
                         </Col>
                         {/*Container for contents*/}

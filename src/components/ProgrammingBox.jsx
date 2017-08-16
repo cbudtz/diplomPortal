@@ -1,31 +1,28 @@
 /**
  * Created by Christian on 23-05-2017.
  */
-import React, {Component} from "react";
+import React, {Component, PropTypes} from "react";
 import AceEditor from 'react-ace';
 import 'brace/mode/java.js';
 import 'brace/mode/javascript';
 import 'brace/theme/eclipse';
 import 'brace/ext/language_tools';
 import 'brace/ext/searchbox';
+import brace from 'brace';
 
 import {Button, ButtonGroup, Panel, PanelGroup} from "react-bootstrap";
 import update from 'immutability-helper';
 
 export default class ProgrammingBox extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             mainClass: "Main",
             files: [
                 {
                     "fileName": "Main.java",
-                    "fileContents": "public class Main {\r\n" +
-                    "\tpublic static void main(String[] args){\r\n" +
-                    "\t\tSystem.out.println(\"Hello!\");\r\n" +
-                    "\t}\r\n" +
-                    "}"
+                    "fileContents": props.code
                 }],
             input: [],
             activeFile: 0,
@@ -71,9 +68,9 @@ export default class ProgrammingBox extends Component {
             })
         }).then((response)=>{
             response.json().then((json)=>{
-
+                console.log(json);
                 var runRes = json.runResult;
-                console.log(runRes);
+
 
                 if (!runRes) {
                     runRes = {systemOut:["Compilation Failed"],
@@ -105,16 +102,16 @@ export default class ProgrammingBox extends Component {
 
 
     render() {
-        console.log(this.state);
         return (
             <div>
-                <div>
-                    Modificer koden så den udskriver 'Hello world!'
-                </div>
                 <h4>
                     Kode-Editor
                 </h4>
+
                 <AceEditor
+                    markers={[{
+                        startRow:1,startCol:1,endRow:1,endCol:1,type:"Error"}
+                    ]}
                     mode="java"
                     theme="eclipse"
                     name="testBox"
@@ -129,14 +126,9 @@ export default class ProgrammingBox extends Component {
                     value={this.state.files[this.state.activeFile].fileContents}
                     onChange={this.handleAceEditorChange}
 
+
                 />
 
-                {/*<FormGroup controlId="codeArea">*/}
-                    {/*<ControlLabel>Code</ControlLabel>*/}
-                    {/*<FormControl componentClass="textArea" value={this.state.files[this.state.activeFile].fileContents}*/}
-                                 {/*rows={10} style={{fontFamily:"monospace"}}*/}
-                                 {/*onChange={this.handleCodeChange}/>*/}
-                {/*</FormGroup>*/}
                 <ButtonGroup>
                     <Button onClick={this.handleRunClick} className={this.state.compiling ? "disabled" : ""}>
                         {this.state.compiling ? "Running Code...":"Run Code!"}
@@ -151,5 +143,9 @@ export default class ProgrammingBox extends Component {
 
     }
 
+}
+
+ProgrammingBox.propTypes={
+    code:PropTypes.string.isRequired
 }
 

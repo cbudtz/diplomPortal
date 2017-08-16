@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import {Col, Glyphicon, Grid, ListGroupItem} from 'react-bootstrap';
-import Rip from '../rest/Rip';
 import ContentEditable from "react-contenteditable";
 import CheckboxComp from "./CheckboxComp";
 
@@ -18,7 +17,7 @@ export default class EmbeddedLinkSubelement extends Component {
     render(){
         return <ListGroupItem>
             <h4 className="list-group-item-heading">
-                <CheckboxComp onCheck={this.props.onCheck} checked={this.props.checked}/>
+                <CheckboxComp id={this.props.checkBoxId} onCheck={this.props.onCheck} checked={this.props.checked}/>
                 {this.props.title} <a href={this.props.link} target="_blank"><span style={{fontSize:'50%'}}>klik for at åbne i et nyt vindue</span> <Glyphicon glyph="new-window" /></a></h4>
 
             <Grid fluid style={{minHeight:'400px'}}>
@@ -27,7 +26,7 @@ export default class EmbeddedLinkSubelement extends Component {
                 </Col>
                 <Col sm={4}>
                     <h5><Glyphicon glyph="pencil"/><b>Noter</b></h5>
-                    <ContentEditable html={this.props.notes} onChange={this.handleChange}/>
+                    <ContentEditable style={{borderWidth:1, borderStyle:"solid", borderColor:"lightgrey"}} html={this.props.notes} onChange={this.handleChange}/>
                 </Col>
             </Grid>
 

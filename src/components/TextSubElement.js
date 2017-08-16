@@ -31,7 +31,7 @@ export default class TextSubElement extends Component{
                         </Col>
                         <Col sm={4}>
                             <h5><Glyphicon glyph="pencil"/><b>Noter</b></h5>
-                            <ContentEditable html={this.props.notes} onChange={this.handleChange}/>
+                            <ContentEditable style={{borderWidth:1, borderStyle:"solid", borderColor:"lightgrey"}} html={this.props.notes} onChange={this.handleChange}/>
 
                         </Col>
                     </Row>

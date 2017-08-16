@@ -78,7 +78,7 @@ export default class App extends Component {
     }
 
     fetchUser(id) {
-        Rip.getJson(this.props.apiUrl + '/users/' + id, (json) => { // '/users/' + id
+        Rip.getJson(this.props.apiUrl + '/users/self' , (json) => { // '/users/' + id
             console.log('got user data')
             console.log(json);
             if(json.agendaInfoMap && !json.activeAgenda){
@@ -115,6 +115,7 @@ export default class App extends Component {
                     coursePlanSource: "GoogleSheet"
                 }
             })
+            this.fetchCourse(this.state.user.activeAgenda,this.state.user.agendaInfoMap[this.state.user.activeAgenda].agendaId)
         }, (response)=>{
             console.log(response)
         })
@@ -173,7 +174,9 @@ export default class App extends Component {
             ]
             updatedUser.activeAgenda = e.id;
             //TODO update user in db
-            // Rip.postForString(this.props.apiUrl + "/users/")
+            Rip.postForString(this.props.apiUrl + "/users/self", updatedUser, (string)=>{
+                console.log("updated user: " + updatedUser);
+            })
             this.setState({user: updatedUser, navbar:newNavbar, activePage:{component: "Agenda"}})
 
             this.fetchCourse(e.id, e.agendaId);

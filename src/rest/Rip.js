@@ -35,6 +35,9 @@ export default class Rip {
         }).then((response)=>{
             console.log('got response');
             response.text().then((text) =>{
+                if(response.status!==200 && response.status!==204){
+                    catchback({message:"Rip: Error while GET'ing: " + text, response: response})
+                }
                 callback(text);
             })
         }).catch((response)=>{
