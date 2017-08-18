@@ -40,7 +40,12 @@ export default class Agenda extends Component {
 
 //view
     render() {
-
+        let courseAdmin = false;
+        if (this.props.course.admins && this.props.user && this.props.user.id){
+           this.props.course.admins.forEach((adminId)=>{
+               courseAdmin = adminId==this.props.user.id;
+           })
+        }
         const generalLinkUrl = this.state.linksUrl +
             ((this.props.user === null) ?
                 "/default" :
@@ -48,15 +53,15 @@ export default class Agenda extends Component {
         const courseLinkUrl = this.state.linksUrl + "?user=" + this.props.user + "&course=" + this.props.course.id;
         return (
             <Grid fluid>
-                <Row>
-                    <Col mdOffset={2} md={4} sm={6}>
-                        <LinkBox title={this.props.generalLinksTitle} linkUrl={generalLinkUrl}/>
-                    </Col>
-                    <Col md={4} sm={6}>
-                        <LinkBox title={this.props.courseLinksTitle} linkUrl={courseLinkUrl}/>
-                    </Col>
+                {/*<Row>*/}
+                    {/*<Col mdOffset={2} md={4} sm={6}>*/}
+                        {/*<LinkBox title={this.props.generalLinksTitle} linkUrl={generalLinkUrl}/>*/}
+                    {/*</Col>*/}
+                    {/*<Col md={4} sm={6}>*/}
+                        {/*<LinkBox title={this.props.courseLinksTitle} linkUrl={courseLinkUrl}/>*/}
+                    {/*</Col>*/}
 
-                </Row>
+                {/*</Row>*/}
                 <Row>
                     <Col>
                         <AgendaTable coursePlan={this.props.coursePlan}

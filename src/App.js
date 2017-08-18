@@ -11,6 +11,7 @@ import ForumPage from "./ForumPage";
 import CourseAdminPage from "./CourseAdminPage";
 import PortalAdminPage from "./PortalAdminPage";
 import Rip from "./rest/Rip";
+import ProfilePage from "./ProfilePage";
 
 
 export default class App extends Component {
@@ -23,6 +24,9 @@ export default class App extends Component {
         user.roles.forEach((role)=>{
             if (role.roleName ==="CourseAdmin") {courseAdmin = true}
         })
+        if (user.adminOfCourses){
+            courseAdmin=true;
+        }
         if (courseAdmin || portalAdmin) {
             var adminMenu = {type: "NavDropDown", id: 10, text: "Admin", items: []}
             if (courseAdmin) {
@@ -35,6 +39,14 @@ export default class App extends Component {
         } else return {};
 
     };
+    userUpdate = (user)=>{
+        Rip.post(this.props.apiUrl + "/users/self", user, (user)=>{
+            this.setState({
+                user: user
+            })
+        })
+    };
+
 
     constructor(props) {
         super(props);
@@ -96,8 +108,8 @@ export default class App extends Component {
                     ,
                     {type: "NavItem", id: {component: "Agenda"}, text: "Agenda"},
                     {type: "NavItem", id: {component: "CourseInfo"}, text: "Kursus oversigt"},
-                    {type: "NavItem", id: {component: "Syllabus"}, text: "Pensum", component: "Syllabus"},
-                    {type: "NavItem", id: {component: "Forum"}, text: "Forum", component: "Forum"},
+                    // {type: "NavItem", id: {component: "Syllabus"}, text: "Pensum", component: "Syllabus"},
+                    // {type: "NavItem", id: {component: "Forum"}, text: "Forum", component: "Forum"},
                     adminDropDown
                 ]
 
@@ -157,8 +169,6 @@ export default class App extends Component {
     }
 
     onMenuSelect = (e)=>{
-        console.log("got selection");
-        console.log(e)
         if(e.id){
             let updatedUser = this.state.user;
             let agendaDropDown = this.generateAgendaDropDown(this.state.user.agendaInfoMap, e.id);
@@ -168,14 +178,13 @@ export default class App extends Component {
                 ,
                 {type: "NavItem", id: {component: "Agenda"}, text: "Agenda"},
                 {type: "NavItem", id: {component: "CourseInfo"}, text: "Kursus oversigt"},
-                {type: "NavItem", id: {component: "Syllabus"}, text: "Pensum", component: "Syllabus"},
-                {type: "NavItem", id: {component: "Forum"}, text: "Forum", component: "Forum"},
+                // {type: "NavItem", id: {component: "Syllabus"}, text: "Pensum", component: "Syllabus"},
+                // {type: "NavItem", id: {component: "Forum"}, text: "Forum", component: "Forum"},
                 adminDropDown
             ]
             updatedUser.activeAgenda = e.id;
             //TODO update user in db
             Rip.postForString(this.props.apiUrl + "/users/self", updatedUser, (string)=>{
-                console.log("updated user: " + updatedUser);
             })
             this.setState({user: updatedUser, navbar:newNavbar, activePage:{component: "Agenda"}})
 
@@ -184,6 +193,10 @@ export default class App extends Component {
             this.setState({activePage: e})
         }
     }
+
+    onProfileEditSelect = ()=>{
+        this.setState({activePage:{component:"ProfilePage"}})
+    };
 
     fetchCourse= (courseId, agendaId)=> {
         Rip.getJson(this.props.apiUrl + "/courses/" + courseId, (json)=>{
@@ -202,7 +215,7 @@ export default class App extends Component {
         Rip.getJson(this.props.apiUrl + "/courseplans/" + courseplanId,
             (json)=>{
                 if (json.get)
-                console.log("FoundCoursePlan: ")
+                    console.log("FoundCoursePlan: ")
                 this.setState({
                     coursePlan: json,
                     coursePlanloading: false
@@ -237,7 +250,7 @@ export default class App extends Component {
         let coursePlan = this.state.coursePlan;
         //Loop through All courseAcitivities
         coursePlan.courseActivityList.forEach((courseActivity, index, activityArray)=>{
-             this.mergeAgendaWithCourseActivity(courseActivity.activityElementList);
+            this.mergeAgendaWithCourseActivity(courseActivity.activityElementList);
         })
         this.setState({coursePlan:coursePlan})
 
@@ -263,14 +276,14 @@ export default class App extends Component {
                 let Agendaelement = this.state.agenda.elementMetaData[activityElement.id]
                 console.log("AgendaElement");console.log(Agendaelement);
 
-                    //Check if Element has metadata
-                    if(Agendaelement.metaDataList[activitySubElement.id]) {
-                        activitySubElement.checked = Agendaelement.metaDataList[activitySubElement.id].checked
-                        activitySubElement.progression = Agendaelement.metaDataList[activitySubElement.id].progression
-                        activitySubElement.notes = Agendaelement.metaDataList[activitySubElement.id].notes
-                        if (activitySubElement.checked==true)
-                            finished++;
-                            }
+                //Check if Element has metadata
+                if(Agendaelement.metaDataList[activitySubElement.id]) {
+                    activitySubElement.checked = Agendaelement.metaDataList[activitySubElement.id].checked
+                    activitySubElement.progression = Agendaelement.metaDataList[activitySubElement.id].progression
+                    activitySubElement.notes = Agendaelement.metaDataList[activitySubElement.id].notes
+                    if (activitySubElement.checked==true)
+                        finished++;
+                }
             }
 
         })
@@ -300,6 +313,7 @@ export default class App extends Component {
                            activeActivityElementId={this.state.activeActivityElementId}
                            showModal={this.state.showModal}
                            hideModal={this.hideModal}
+                           // user={this.state.user}
             />
         } else if (component === "CourseInfo") {
             return <CourseInfoPage course={this.state.course} apiUrl={this.props.apiUrl}/>
@@ -311,7 +325,9 @@ export default class App extends Component {
             return <CourseAdminPage course={this.state.course} apiUrl={this.props.apiUrl}/>
         } else if (component === "PortalAdmin") {
             return <PortalAdminPage course={this.state.course} apiUrl={this.props.apiUrl}/>
-        } else  {
+        } else if (component === "ProfilePage") {
+            return <ProfilePage user={this.state.user} updateUser={(user)=>this.userUpdate(user)}/>
+        } else {
             return <LoginPage course={this.state.course} apiUrl={this.props.apiUrl}/>
         }
 
@@ -392,6 +408,7 @@ export default class App extends Component {
 
                 <TopMenu apiUrl={this.props.apiUrl} menuItems={this.state.navbar} avatar={this.state.avatar}
                          activeId={this.state.activePage} onSelect={this.onMenuSelect} onLogout={this.onLogout}
+                         onProfileEdit={this.onProfileEditSelect}
                 />
                 {this.getComponent()}
 

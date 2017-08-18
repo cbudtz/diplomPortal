@@ -16,9 +16,13 @@ export default class ActivityRow extends Component{
     }
 
     checkIfDone(){
+        let done = true;
         this.props.activity.activityElementList.forEach((activityElement)=>{
-
+            if (activityElement.subElements && activityElement.subElements.length>0 && activityElement.progress<1){
+                done = false;
+            }
         })
+        return done;
     }
 
     render(){
@@ -34,8 +38,10 @@ export default class ActivityRow extends Component{
             }
         }
         var className = ''
-        if (date < new Date()) {
+        if (this.checkIfDone()) {
             className += 'success '
+        } else if (date > 0 && date < new Date()) {
+            className += 'warning'
         }
         if (this.props.activity.status==='DRAFT'){
             className += 'text-muted ';

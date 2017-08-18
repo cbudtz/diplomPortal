@@ -1,7 +1,7 @@
 /**
  * Created by Christian on 02-05-2017.
  */
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import Config from "./config";
 
@@ -16,7 +16,10 @@ export default class TopMenu extends Component {
 
         if(this.props.avatar.id){
             if(eventKey===0.1){
-                this.props.onLogout()
+                this.props.onLogout();
+            } else {
+                console.log("editing profile")
+                this.props.onProfileEdit();
             }
         } else {
             //Send User to CampusnetLogin
@@ -37,6 +40,7 @@ export default class TopMenu extends Component {
         if (this.props.avatar.id){
             return <NavDropdown id="avatarDropDown" eventKey={0} title={this.props.avatar.id}>
                 <NavItem id="avatarLogout" eventKey={0.1}>Logout</NavItem>
+                <NavItem id="editProfile" eventKey={0.2}>Profil</NavItem>
             </NavDropdown>
         } else {
             return <NavItem>
@@ -46,7 +50,7 @@ export default class TopMenu extends Component {
     }
 
     getNavContent = () => {
-        var content = this.props.menuItems.map((nav, no) => {
+        return this.props.menuItems.map((nav, no) => {
             if (nav.type === "NavText") {
                 return <NavItem key={nav.id} eventKey={nav.id}/>
             } else if (nav.type === "NavItem") {
@@ -64,8 +68,7 @@ export default class TopMenu extends Component {
             } else {
                 return <div>wrong type</div>
             }
-        })
-        return content;
+        });
     }
 
     render() {
@@ -89,4 +92,11 @@ export default class TopMenu extends Component {
     }
 
 
+}
+
+TopMenu.proptypes = {
+    onLogout: PropTypes.func,
+    onProfileEdit: PropTypes.func,
+    onSelect: PropTypes.func,
+    menuItems: PropTypes.array
 }

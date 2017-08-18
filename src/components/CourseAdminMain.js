@@ -116,7 +116,8 @@ export default class CourseAdminMain extends Component{
                         <Form inline>
                         <FormGroup>
                             <ControlLabel>Google Sheet Id: </ControlLabel>
-                            <EditableText text={googleSheetId} newInput={(sheetId)=>this.newGoogleSheetId(sheetId)}/>
+                            <EditableText text={googleSheetId} newInput={(sheetId)=>this.newGoogleSheetId(sheetId)}/><br/>
+                            {googleSheetId && <a href={'https://docs.google.com/spreadsheets/d/' + googleSheetId + '/edit'}>{'https://docs.google.com/spreadsheets/d/' + googleSheetId + '/edit'}</a>}
                         </FormGroup>
 
                             <br/>
