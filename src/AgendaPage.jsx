@@ -1,8 +1,8 @@
-import React, {Component, PropTypes} from 'react';
-import LinkBox from "./components/LinkBox";
+import React, {Component, PropTypes} from "react";
 import {Col, Grid, Row} from "react-bootstrap";
-import AgendaTable from "./components/AgendaTable"
-import ActivityElementContainer from "./components/ActivityElementModal";
+import AgendaTable from "./components/AgendaTable";
+import ripple from './ripple.svg';
+import ActivityElementModal from "./components/ActivityElementModal";
 
 export default class Agenda extends Component {
 
@@ -22,7 +22,6 @@ export default class Agenda extends Component {
 
     handleActivityClick = (activity, activityElement) => {
         this.props.handleActivityClick(activity,activityElement);
-        const type = activityElement.activityElementType;
 
     };
 
@@ -40,28 +39,17 @@ export default class Agenda extends Component {
 
 //view
     render() {
-        let courseAdmin = false;
-        if (this.props.course.admins && this.props.user && this.props.user.id){
-           this.props.course.admins.forEach((adminId)=>{
-               courseAdmin = adminId==this.props.user.id;
-           })
-        }
-        const generalLinkUrl = this.state.linksUrl +
-            ((this.props.user === null) ?
-                "/default" :
-                "/" + this.props.user);
-        const courseLinkUrl = this.state.linksUrl + "?user=" + this.props.user + "&course=" + this.props.course.id;
+        //TODO: fremmøderegistrering
+        // let courseAdmin = false;
+        // if (this.props.course.admins && this.props.user && this.props.user.id){
+        //    this.props.course.admins.forEach((adminId)=>{
+        //        courseAdmin = (adminId===this.props.user.id);
+        //    })
+        // }
         return (
-            <Grid fluid>
-                {/*<Row>*/}
-                    {/*<Col mdOffset={2} md={4} sm={6}>*/}
-                        {/*<LinkBox title={this.props.generalLinksTitle} linkUrl={generalLinkUrl}/>*/}
-                    {/*</Col>*/}
-                    {/*<Col md={4} sm={6}>*/}
-                        {/*<LinkBox title={this.props.courseLinksTitle} linkUrl={courseLinkUrl}/>*/}
-                    {/*</Col>*/}
-
-                {/*</Row>*/}
+            <Grid>
+                {this.props.coursePlanLoading===true && <div>Loading courseplan... <img src={ripple} alt="..."/></div>}
+                {this.props.coursePlanLoading==="failed" && <div>Kursusplanen kunne ikke indlæses</div>}
                 <Row>
                     <Col>
                         <AgendaTable coursePlan={this.props.coursePlan}
@@ -70,11 +58,11 @@ export default class Agenda extends Component {
                 </Row>
 
 
-                        <ActivityElementContainer hideModal={this.hideModal} showModal={this.props.showModal}
-                                                  className="scroll-div" ref="activityContainer" title={this.props.activeActivityElement}
-                                                  handleSubElementCheck={this.handleSubElementCheck}
-                                                  handleNotes={this.handleNotes}
-                                                  subElements={this.props.activitySubElements}/>
+                        <ActivityElementModal hideModal={this.hideModal} showModal={this.props.showModal}
+                                              className="scroll-div" ref="activityContainer" title={this.props.activeActivityElement}
+                                              handleSubElementCheck={this.handleSubElementCheck}
+                                              handleNotes={this.handleNotes}
+                                              subElements={this.props.activitySubElements}/>
 
 
 

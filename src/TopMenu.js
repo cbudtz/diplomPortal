@@ -1,15 +1,54 @@
 /**
  * Created by Christian on 02-05-2017.
  */
-import React, {Component, PropTypes} from 'react';
-import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import React, {Component, PropTypes} from "react";
+import {
+    Button,
+    Col,
+    ControlLabel,
+    Form,
+    FormControl,
+    FormGroup,
+    Glyphicon,
+    MenuItem,
+    Modal,
+    Nav,
+    Navbar,
+    NavDropdown,
+    NavItem
+} from "react-bootstrap";
 import Config from "./config";
+import {arrayMove, SortableContainer, SortableElement, SortableHandle} from "react-sortable-hoc";
 
 export default class TopMenu extends Component {
+    sortEnd = ({oldIndex, newIndex})=>{
+        console.log("Move from:" + oldIndex + " to: " + newIndex)
+        this.props.onLinksUpdated(arrayMove(this.props.links,oldIndex,newIndex))
+
+    };
+    handlenewLinkClicked = ()=>{
+        this.setState({showModal:true})
+    };
+    handlesubmitLink = (e)=>{
+        e.preventDefault();
+        let links = this.props.links;
+        links.push({text:this.state.textInput,href:this.state.hrefInput})
+        this.setState({showModal:false, textInput:'', hrefInput:'http://'})
+        this.props.onLinksUpdated(links)
+    };
+    handleLinkRemove = (e)=>{
+        console.log(e);
+        let links = this.props.links;
+        links = links.filter((link)=>{
+            console.log(link)
+            return !(link.text ===e.text && link.href===e.href)
+        })
+        this.props.onLinksUpdated(links);
+    };
 
     constructor(props) {
         super(props);
-        this.state = {active: props.activeId}
+        this.state = {active: props.activeId, showModal:false, hrefInput:'http://',textInput:''}
     };
 
     handleAvatarClick = (eventKey) => {
@@ -66,15 +105,36 @@ export default class TopMenu extends Component {
             } else if (nav.type === "Avatar") {
                 return (<NavItem pullRight={true}>Avatar</NavItem>)
             } else {
-                return <div>wrong type</div>
+                return
             }
         });
     }
 
+
+    getLinkContent =()=> {
+        if (!(this.props.links)) return;
+        return this.props.links.map((link)=>{
+            return <NavItem key={link.href} onClick={()=>window.open(link.href)}>{link.text}</NavItem>
+        })
+
+    }
+
+
+    isAdmin = ()=>{
+        if (this.props.user && this.props.course && this.props.course.admins) {
+            return this.props.course.admins.includes(this.props.user.id)
+
+        }else {
+            return false;
+        }
+    }
+
+
     render() {
-        console.log("menu state: ");
-        console.log(this.state)
+        console.log(this.isAdmin())
+        let isLoggedIn = !!this.props.user;
         return <div className="NavbarContainer">
+
             <Navbar className="navbar-fixed-top" fluid>
                 <Navbar.Header>
                     <Navbar.Toggle/>
@@ -82,15 +142,63 @@ export default class TopMenu extends Component {
                 <Navbar.Collapse>
                     <Nav onSelect={this.handleNavSelect}>
                         {this.getNavContent()}
+
+                        {isLoggedIn &&(this.isAdmin() ?
+                            <SortableNav helperClass="sortableHelper" useWindowAsScrollContainer={true} useDragHandle={true}
+                                         items={this.props.links ? this.props.links : []} onSortEnd={this.sortEnd}
+                                         newLink={this.handlenewLinkClicked}
+                                         removeLink={this.handleLinkRemove}
+                            />
+                            :
+                            <NavDropdown id="Links" title="Links">
+                                {this.getLinkContent()}
+
+                            </NavDropdown>
+                        )}
+
+
                     </Nav>
+
                     <Nav onSelect={this.handleAvatarClick} pullRight>
-                            {this.getUserMenu()}
+                        {this.getUserMenu()}
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
+            <Modal bsSize={"sm"} show={this.state.showModal} onHide={()=>this.setState({showModal:false})}>
+                <Modal.Header closeButton><h4>Nyt Link</h4></Modal.Header>
+                <Modal.Body>
+
+                    <Form horizontal>
+                        <FormGroup controlId="formHorizontalEmail">
+                            <Col componentClass={ControlLabel} sm={4}>
+                                Tekst
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl type="text" placeholder="tekst" value={this.state.textInput} onChange={(e)=>this.setState({textInput:e.target.value})}/>
+                            </Col>
+                        </FormGroup>
+
+                        <FormGroup controlId="formHorizontalPassword">
+                            <Col componentClass={ControlLabel} sm={4}>
+                                Url
+                            </Col>
+                            <Col sm={6}>
+                                <FormControl type="url" placeholder="http://" value={this.state.hrefInput} onChange={(e)=>this.setState({hrefInput:e.target.value})}/>
+                            </Col>
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Col smOffset={2} sm={10}>
+                                <Button type="submit" onClick={this.handlesubmitLink}>
+                                    Gem link
+                                </Button>
+                            </Col>
+                        </FormGroup>
+                    </Form>
+                </Modal.Body>
+            </Modal>
         </div>
     }
-
 
 }
 
@@ -98,5 +206,28 @@ TopMenu.proptypes = {
     onLogout: PropTypes.func,
     onProfileEdit: PropTypes.func,
     onSelect: PropTypes.func,
-    menuItems: PropTypes.array
+    onLinksUpdated: PropTypes.func,
+    menuItems: PropTypes.array,
+    user: PropTypes.any,
+    course: PropTypes.any
 }
+
+const DragHandle = SortableHandle(()=> <span><Glyphicon glyph="resize-vertical"/></span>)
+
+
+const SortableItem = SortableElement(({value, removeLink}) =>
+    <NavItem onClick={()=>window.open(value.href)}><DragHandle/>{value.text} <Glyphicon value={value.href} glyph="remove" onClick={(e)=>{e.stopPropagation();removeLink(value)}}/></NavItem>
+);
+
+const SortableNav = SortableContainer(({items, newLink, removeLink}) => {
+    return (
+
+        <NavDropdown title="Links" id="Links">
+            {items.map((value, index) => (
+                <SortableItem key={value.href} index={index} value={value} removeLink={(e)=>removeLink(e)} />
+            ))}
+            <NavItem onClick={newLink}><Glyphicon glyph="plus"/> nyt link</NavItem>
+
+        </NavDropdown>
+    );
+});

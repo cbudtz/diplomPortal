@@ -73,7 +73,7 @@ export default class CourseAdminMain extends Component{
     };
 
     generateUsertableBody(){
-        if (this.props.users ==null) return <tr/> //Intentional type coecion from null to string
+        if (this.props.users ==null) return <tr/> //Intentional type coersion from null to string
         let contents =
         this.props.users.map((user)=>{
             return <tr key={user.id}>
@@ -109,6 +109,8 @@ export default class CourseAdminMain extends Component{
             if(this.props.course){
                 googleSheetId= this.props.course.googleSheetPlanId;
             };
+            console.log(this.props.syncing);
+            console.log(this.props.syncError);
             return <div>
                 <EditableHeadLine shortHand={shortHand} courseName={courseName} newInput={this.newShortAndTitle} />
                 <Panel header={<h3>Kursusplan</h3>} className="panel-default">

@@ -112,3 +112,7 @@ th.rotate > div > span {
 a {
   cursor: pointer
 }
+
+.sortableHelper {
+  z-index: 10000;
+}
