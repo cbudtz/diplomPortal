@@ -411,7 +411,7 @@ export default class App extends Component {
                          onProfileEdit={this.onProfileEditSelect}
                 />
                 {this.getComponent()}
-
+                <div>hej freya</div>
                 <img src={logo} className="App-logo" alt="logo" />
 
             </div>
