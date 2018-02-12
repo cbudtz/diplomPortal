@@ -16,7 +16,7 @@ export default class CourseAdminPage extends Component{
         this.state = {
             loading: true,
             courseList: [],
-            currentCourse : null
+            currentCourse : this.props.course
         }
 
     }
