@@ -35,7 +35,7 @@ export default class CourseAdminPage extends Component{
             })
         } else {
             let currentCourseId = this.state.currentCourse.id;
-            newCurrentCourse = this.state.currentCourse;
+            newCurrentCourse = json[0];
             json.forEach((course, index) => {
                 if (course.id === currentCourseId) {
                     newCurrentCourse=course;
