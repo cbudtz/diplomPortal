@@ -35,7 +35,7 @@ export default class CourseAdminMenu extends Component{
                 <div className="panel-body">
                     {this.generateCourseList()}
 
-                    <a onClick={this.handleNewCourseClick}><Glyphicon glyph="plus"/> Nyt kursus</a>
+                    {this.props.createCourses && <a onClick={this.handleNewCourseClick}><Glyphicon glyph="plus"/> Nyt kursus</a>}
                 </div>
             </Panel>
         </div>
@@ -46,6 +46,7 @@ CourseAdminMenu.propTypes = {
     courseList: PropTypes.array,
     courseClicked: PropTypes.func,
     newCourseClicked: PropTypes.func,
+    createCourses: PropTypes.bool,
     loading: PropTypes.any
 }
 

@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import TopMenu from "./TopMenu.js";
 import Agenda from "./AgendaPage.jsx";
@@ -12,6 +11,9 @@ import CourseAdminPage from "./CourseAdminPage";
 import PortalAdminPage from "./PortalAdminPage";
 import Rip from "./rest/Rip";
 import ProfilePage from "./ProfilePage";
+import {toast, ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
 
 
 export default class App extends Component {
@@ -46,6 +48,32 @@ export default class App extends Component {
             })
         })
     };
+    updateLinks = (links)=>{
+        let course = this.state.course;
+        course.courseLinks = links;
+        this.setState({course:course})
+        Rip.put(this.props.apiUrl + '/courses/' + this.state.course.id + '/links', links,
+            (json)=>{
+                this.setState({course: json})
+                toast.info("links opdateret")
+            },
+            (response)=>{
+                toast.warning("links kunne ikke opdateres -" + response.message)
+            }
+        )
+    };
+    saveInfoContent = (content)=>{
+        let course = this.state.course;
+        course.courseInfoLines= content;
+        this.setState({course:course})
+        Rip.put(this.props.apiUrl + "/courses/" + this.state.course.id + "/courseinfo", content,
+            (json)=>{
+            toast.info("Kursusindhold opdateret");
+            },
+            (response)=>{
+            toast.warning("Kursusindhold kunne ikke opdateres. " + response.message)
+            })
+    };
 
 
     constructor(props) {
@@ -71,8 +99,7 @@ export default class App extends Component {
         } else {
             this.state = {
                 user: null,
-                navbar: [{type:"NavItem", id:-1, text:"Please Login"},
-                ],
+                navbar: [],
                 avatar: {id: null},
                 pages: {
                     0: {period: "F17", course: "02324", component: "Agenda"},
@@ -80,10 +107,12 @@ export default class App extends Component {
                 },
                 activePage: {component: "Login"},
                 course: {
+                    courseLines:[],
                     courseId: "02324F17",
                     courseName: "Videregående programmering",
                     coursePlanId: "1Zj-1eLX67PQRzM7m1icq2vSXzbHn2iFvN4V9cUHTWQo",
-                    coursePlanSource: "GoogleSheet"
+                    coursePlanSource: "GoogleSheet",
+                    courseLinks:[]
                 }
             }
         }
@@ -121,10 +150,11 @@ export default class App extends Component {
                 },
                 activePage: {period: "F17", course: "02324", component: "Agenda"},
                 course: {
-                    courseId: "02324F17",
-                    courseName: "Videregående programmering",
-                    coursePlanId: "1Zj-1eLX67PQRzM7m1icq2vSXzbHn2iFvN4V9cUHTWQo",
-                    coursePlanSource: "GoogleSheet"
+                    courseLines:[],
+                    courseId: "Loading course",
+                    courseName: "",
+                    coursePlanId: "",
+                    coursePlanSource: ""
                 }
             })
             this.fetchCourse(this.state.user.activeAgenda,this.state.user.agendaInfoMap[this.state.user.activeAgenda].agendaId)
@@ -141,9 +171,6 @@ export default class App extends Component {
             console.log("setting active agenda")
             // activeAgenda = Object.keys(agendaInfoMap)[0];
         }
-        console.log("generating agendaDropDown")
-        console.log(agendaInfoMap)
-        console.log(activeAgenda)
         if (agendaInfoMap && activeAgenda && agendaInfoMap[activeAgenda]) {
             content.id = activeAgenda
 
@@ -200,6 +227,10 @@ export default class App extends Component {
 
     fetchCourse= (courseId, agendaId)=> {
         Rip.getJson(this.props.apiUrl + "/courses/" + courseId, (json)=>{
+            if (json.admins && json.admins.includes(this.state.user.id)){
+                console.log("user is courseAdmin")
+                console.log("test")
+            }
             this.setState({
                 course:json
             })
@@ -210,15 +241,19 @@ export default class App extends Component {
     fetchCoursePlan= (courseplanId, agendaId)=> {
         console.log("Fethcing coursePlan: " + courseplanId)
         this.setState({
-            coursePlanloading:true
+            coursePlanLoading:true
         })
+        if (courseplanId===null){
+            this.setState({coursePlanLoading:"failed"})
+            toast.error("Dette Kursus har ikke tilknyttet en kursusplan endnu")
+        }
         Rip.getJson(this.props.apiUrl + "/courseplans/" + courseplanId,
             (json)=>{
                 if (json.get)
                     console.log("FoundCoursePlan: ")
                 this.setState({
                     coursePlan: json,
-                    coursePlanloading: false
+                    coursePlanLoading: false
                 })
                 this.fetchAgenda(agendaId)
             }, (response)=>{
@@ -226,7 +261,7 @@ export default class App extends Component {
                     response.text().then((text)=>{
                         this.setState({
                             coursePlan:null,
-                            coursePlanLoading:false,
+                            coursePlanLoading:"failed",
                             coursePlanLoadErrorMsg: text
                         })
                     })
@@ -257,7 +292,6 @@ export default class App extends Component {
     }
 
     mergeAgendaWithCourseActivity = (courseActivity)=> {
-        console.log(courseActivity)
         //Loop through all activities' elements
         courseActivity.forEach((activityElement, index, activityElementArray)=>{
             this.mergeAgendaWithAcvitityElement(activityElement);
@@ -266,7 +300,6 @@ export default class App extends Component {
 
 
     mergeAgendaWithAcvitityElement(activityElement) {
-        console.log(activityElement)
         let finished = 0.0;
         //Loop through all subelements of the elements (Activity->Element->subElement
         activityElement.subElements.forEach((activitySubElement, index, activitySubElementArray)=>{
@@ -274,14 +307,13 @@ export default class App extends Component {
             if (this.state.agenda.elementMetaData[activityElement.id]){
                 //Lookup metadata for Element
                 let Agendaelement = this.state.agenda.elementMetaData[activityElement.id]
-                console.log("AgendaElement");console.log(Agendaelement);
 
                 //Check if Element has metadata
                 if(Agendaelement.metaDataList[activitySubElement.id]) {
                     activitySubElement.checked = Agendaelement.metaDataList[activitySubElement.id].checked
                     activitySubElement.progression = Agendaelement.metaDataList[activitySubElement.id].progression
                     activitySubElement.notes = Agendaelement.metaDataList[activitySubElement.id].notes
-                    if (activitySubElement.checked==true)
+                    if (activitySubElement.checked===true)
                         finished++;
                 }
             }
@@ -304,7 +336,9 @@ export default class App extends Component {
     getComponent = ()=> {
         const component = this.state.activePage.component;
         if (component === "Agenda") {
-            return <Agenda course={this.state.course} coursePlan={this.state.coursePlan} apiUrl={this.props.apiUrl}
+            return <Agenda course={this.state.course} coursePlan={this.state.coursePlan}
+                           coursePlanLoading={this.state.coursePlanLoading}
+                           apiUrl={this.props.apiUrl}
                            handleActivityClick={this.handleActivityClick}
                            handleSubElementCheck={this.handleSubElementCheck}
                            handleSubElementNotes={this.handleSubElementNotes}
@@ -313,16 +347,17 @@ export default class App extends Component {
                            activeActivityElementId={this.state.activeActivityElementId}
                            showModal={this.state.showModal}
                            hideModal={this.hideModal}
-                           // user={this.state.user}
+                // user={this.state.user}
             />
         } else if (component === "CourseInfo") {
-            return <CourseInfoPage course={this.state.course} apiUrl={this.props.apiUrl}/>
+            return <CourseInfoPage user={this.state.user} content={this.state.course.courseInfoLines} course={this.state.course} apiUrl={this.props.apiUrl}
+            saveContent={this.saveInfoContent}/>
         } else if (component === "Syllabus") {
             return <SyllabusPage course={this.state.course} apiUrl={this.props.apiUrl}/>
         } else if (component === "Forum") {
             return <ForumPage course={this.state.course} apiUrl={this.props.apiUrl}/>
         } else if (component === "CourseAdmin") {
-            return <CourseAdminPage course={this.state.course} apiUrl={this.props.apiUrl}/>
+            return <CourseAdminPage user={this.state.user} course={this.state.course} apiUrl={this.props.apiUrl} />
         } else if (component === "PortalAdmin") {
             return <PortalAdminPage course={this.state.course} apiUrl={this.props.apiUrl}/>
         } else if (component === "ProfilePage") {
@@ -362,7 +397,6 @@ export default class App extends Component {
             agenda: newAgenda
         })
         Rip.postForString(this.props.apiUrl + "/agendas",this.state.agenda,(json)=>{
-            console.log("everything is awesome!!")
         });
         this.mergeAgendaWithCoursePlan();
     }
@@ -407,10 +441,15 @@ export default class App extends Component {
             <div className="App">
 
                 <TopMenu apiUrl={this.props.apiUrl} menuItems={this.state.navbar} avatar={this.state.avatar}
-                         activeId={this.state.activePage} onSelect={this.onMenuSelect} onLogout={this.onLogout}
+                         activeId={this.state.activePage}
+                         onSelect={this.onMenuSelect} onLogout={this.onLogout}
                          onProfileEdit={this.onProfileEditSelect}
+                         onLinksUpdated={this.updateLinks}
+                         user={this.state.user} course={this.state.course}
+                         links={this.state.course ? this.state.course.courseLinks: []}
                 />
                 {this.getComponent()}
+                <ToastContainer position="bottom-right" autoClose={2000}/>
 
             </div>
         );

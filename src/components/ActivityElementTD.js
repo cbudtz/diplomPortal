@@ -2,7 +2,7 @@
  * Created by Christian on 30-05-2017.
  */
 import React, {Component, PropTypes} from 'react';
-import {ProgressBar} from "react-bootstrap";
+import {OverlayTrigger, ProgressBar, Tooltip} from "react-bootstrap";
 
 
 export default class ActivityElementTD extends Component {
@@ -28,9 +28,9 @@ export default class ActivityElementTD extends Component {
         return (<td className="td-wrap">
             <a style={{cursor: "pointer"}} target="_blank" onClick={(e)=>this.handleActivityElementClick(e)} id={this.props.activityElement.id}>
                 {this.props.activityElement.title} </a>
-            {showProgress &&  <ProgressBar bsStyle={(now >= 100) ? "success": "info"}  now={now} label={
+            {showProgress &&  <OverlayTrigger placement={'bottom'} overlay={<Tooltip>Viser hvor stor en del af materialet du har læst</Tooltip>}><ProgressBar bsStyle={(now >= 100) ? "success": "info"}  now={now} label={
                 <span style={{color:"black"}}>{now}%</span>
-            }/>}
+            }/></OverlayTrigger>}
         </td>);
     }
 
