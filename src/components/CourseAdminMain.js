@@ -36,6 +36,11 @@ export default class CourseAdminMain extends Component{
     handleUserSubmit = (event)=>{
         this.props.newUserAdded(this.state.userName, this.state.name, this.state.email)
         event.preventDefault();
+        this.setState({
+            userName: '',
+            name: '',
+            email: ''
+        });
     };
     handleEmailChange = (e)=>{
         this.setState({
@@ -61,6 +66,9 @@ export default class CourseAdminMain extends Component{
     handleCSVSubmit = (e)=>{
         e.preventDefault();
         this.props.newUserCSVSubmitted(this.state.csv)
+        this.setState({
+            csv: ''
+        });
 }
     newShortAndTitle = (short, name)=>{
         console.log('got new short and title:')
@@ -173,7 +181,7 @@ export default class CourseAdminMain extends Component{
                                 <ControlLabel>
                                     {this.props.label}
                                 </ControlLabel>
-                                <FormControl label="Batch-tilføj brugere som csv" type="textarea" componentClass="textarea" rows="4" onChange={this.handleCSVChange}></FormControl>
+                                <FormControl value={this.state.csv} label="Batch-tilføj brugere som csv" type="textarea" componentClass="textarea" rows="4" onChange={this.handleCSVChange}></FormControl>
                                 <HelpBlock>Tilføj enten brugeres campusnet-id kommasepareret, eller csv downloaded fra campusnet</HelpBlock>
                             </FormGroup>
                             <Button onClick={this.handleCSVSubmit}>Tilføj brugere</Button>
