@@ -7,7 +7,7 @@ import {Col, Grid, Row} from "react-bootstrap";
 import CourseAdminMenu from "./components/CourseAdminMenu";
 import Rip from "./rest/Rip";
 import CourseAdminMain from "./components/CourseAdminMain";
-import {ToastContainer, toast} from "react-toastify";
+import {toast} from "react-toastify";
 
 export default class CourseAdminPage extends Component{
     constructor(props){
@@ -17,7 +17,7 @@ export default class CourseAdminPage extends Component{
         this.state = {
             loading: true,
             courseList: [],
-            currentCourse : null
+            currentCourse : this.props.course
         }
 
     }
@@ -35,7 +35,7 @@ export default class CourseAdminPage extends Component{
             })
         } else {
             let currentCourseId = this.state.currentCourse.id;
-            newCurrentCourse = this.state.currentCourse;
+            newCurrentCourse = json[0];
             json.forEach((course, index) => {
                 if (course.id === currentCourseId) {
                     newCurrentCourse=course;
@@ -98,6 +98,7 @@ export default class CourseAdminPage extends Component{
     }
     addUserToCourse(userName, name, email){
         console.log(userName)
+        toast.success("Bruger " + userName + " tilføjet", {autoClose: 8000});
         let userUpdate = {userName: userName, name: name, email: email, role: "student"}
         Rip.postForString(this.currentCourseUrl() + '/users/', userUpdate,
             (String)=>{
@@ -126,7 +127,7 @@ export default class CourseAdminPage extends Component{
                 this.getCourses()
             },(response)=>{
                 response.response.text().then((text)=>{
-                    toast.warning(response.status + ": " + text)
+                    toast.warn(response.status + ": " + text)
                 })
             }
 
@@ -207,7 +208,6 @@ export default class CourseAdminPage extends Component{
                                      syncing={this.state.syncing}/>
                 </Col>
             </Row>
-            <ToastContainer position="bottom-right" autoClose={2000}/>
         </Grid>
 
     }
