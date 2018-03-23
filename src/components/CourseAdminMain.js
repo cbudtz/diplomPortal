@@ -6,7 +6,6 @@ import {
     Button, Checkbox, ControlLabel, Form, FormControl, FormGroup, HelpBlock, Panel,
     Table
 } from "react-bootstrap";
-import {toast} from 'react-toastify';
 import CheckboxComp from "./CheckboxComp";
 import EditableHeadLine from "./EditableHeadLine";
 import EditableText from "./EditableText";
@@ -36,7 +35,6 @@ export default class CourseAdminMain extends Component{
 
     handleUserSubmit = (event)=>{
         this.props.newUserAdded(this.state.userName, this.state.name, this.state.email)
-        toast.success("Bruger " + this.state.userName + " tilføjet", {autoClose: 8000});
         event.preventDefault();
     };
     handleEmailChange = (e)=>{
