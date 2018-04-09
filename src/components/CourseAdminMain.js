@@ -16,9 +16,6 @@ export default class CourseAdminMain extends Component{
     constructor(){
         super();
         this.state={
-            email:'',
-            name: '',
-            userName: '',
             csv: '',
             sheetBox: ''
         }
@@ -31,32 +28,6 @@ export default class CourseAdminMain extends Component{
     handleUsesGoogleSheet = (checked) =>{
         this.props.usesGoogleSheet(checked);
     };
-
-
-    handleUserSubmit = (event)=>{
-        this.props.newUserAdded(this.state.userName, this.state.name, this.state.email)
-        event.preventDefault();
-        this.setState({
-            userName: '',
-            name: '',
-            email: ''
-        });
-    };
-    handleEmailChange = (e)=>{
-        this.setState({
-            email: e.target.value
-        })
-    };
-    handleUserNameChange = (e)=>{
-        this.setState({
-            userName:e.target.value
-        })
-    }
-    handleNameChange = (e)=>{
-        this.setState({
-            name: e.target.value
-        })
-    }
 
     handleCSVChange = (e)=>{
     this.setState({csv: e.target.value
@@ -158,31 +129,15 @@ export default class CourseAdminMain extends Component{
                             </tbody>
                         </Table>
                         <div className="panel-title">
-                            <b>Tilføj ny bruger</b>
+                            <b>Tilføj nye brugere til kurset</b>
                         </div>
-                        <Form inline onSubmit={this.handleUserSubmit}>
-                            <FormGroup>
-                                <ControlLabel>BrugerNavn </ControlLabel>
-                                <FormControl value={this.state.userName} onChange={this.handleUserNameChange}type="text"/>
-                            </FormGroup>
-                            <FormGroup>
-                                <ControlLabel>Navn </ControlLabel>
-                                <FormControl value={this.state.name} onChange={this.handleNameChange}type="text"/>
-                            </FormGroup>
-                            <FormGroup>
-                                <ControlLabel>E-mail </ControlLabel>
-                                <FormControl value={this.state.email} onChange={this.handleEmailChange} type="email"/>
-                            </FormGroup>
-                            <Checkbox/>
-                            <Button type="submit">Opret bruger</Button>
-                        </Form>
                         <Form>
                             <FormGroup>
                                 <ControlLabel>
                                     {this.props.label}
                                 </ControlLabel>
-                                <FormControl value={this.state.csv} label="Batch-tilføj brugere som csv" type="textarea" componentClass="textarea" rows="4" onChange={this.handleCSVChange}></FormControl>
-                                <HelpBlock>Tilføj enten brugeres campusnet-id kommasepareret, eller csv downloaded fra campusnet</HelpBlock>
+                                <FormControl value={this.state.csv} label="Tilføj brugere" type="textarea" componentClass="textarea" rows="4" onChange={this.handleCSVChange}/>
+                                <HelpBlock>Skriv brugernavne for de nye brugere kommasepareret. Brug evt. CSV-fil eksporteret fra deltagerlisten på CampusNet.</HelpBlock>
                             </FormGroup>
                             <Button onClick={this.handleCSVSubmit}>Tilføj brugere</Button>
                         </Form>
