@@ -113,8 +113,11 @@ export default class CourseAdminPage extends Component{
 
     addUserCSVToCourse(csvString) {
         let usersString = {usersCsv:csvString};
+        this.toastLoading = toast("Tilføjer brugere...", {autoClose: false});
         Rip.postForString(this.currentCourseUrl() + '/users/csv', usersString,
             (String)=>{
+                toast.dismiss(this.toastLoading);
+                toast.success("Brugere tilføjet", {autoClose: 5000});
                 this.fetchUserList(this.state.currentCourse.id);
             })
     }
