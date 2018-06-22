@@ -54,7 +54,7 @@ export default class AgendaTable extends Component {
     render() {
         if (this.props.coursePlan && this.props.coursePlan.headers) {
             return (
-                <Table responsive hover>
+                <Table hover>
 
                     {this.getHeaderLine()}
                     <tbody>
@@ -65,7 +65,7 @@ export default class AgendaTable extends Component {
                 </Table>
             )
         } else {
-            return (<Table><tbody><tr><td>No courseplan</td></tr></tbody></Table>)
+            return (<Table><tbody><tr><td></td></tr></tbody></Table>)
         }
 
 

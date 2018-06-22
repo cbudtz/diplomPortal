@@ -7,6 +7,7 @@ import Config from './config'
 
 class LoginPage extends Component {
 
+
     constructor(props){
         super(props);
         this.state = {
@@ -14,6 +15,7 @@ class LoginPage extends Component {
         }
 
     }
+
     cnLogin = () =>{
         const redirectUrl = Config.ApiPath ? Config.ApiPath + Config.campusNetServiceUrl : Config.campusNetServiceUrl;
         location.replace(redirectUrl);

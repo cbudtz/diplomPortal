@@ -7,6 +7,7 @@ import {Col, Grid, Row} from "react-bootstrap";
 import CourseAdminMenu from "./components/CourseAdminMenu";
 import Rip from "./rest/Rip";
 import CourseAdminMain from "./components/CourseAdminMain";
+import {toast} from "react-toastify";
 
 export default class CourseAdminPage extends Component{
     constructor(props){
@@ -16,13 +17,13 @@ export default class CourseAdminPage extends Component{
         this.state = {
             loading: true,
             courseList: [],
-            currentCourse : null
+            currentCourse : this.props.course
         }
 
     }
 
     getCourses() {
-        Rip.getJson(this.props.apiUrl + this.props.coursePath, this.courseCallBack, this.courseCatchBack)
+        Rip.getJson(this.props.apiUrl + this.props.coursePath + "/owned", this.courseCallBack, this.courseCatchBack)
     }
     courseCallBack = (json)=> {
 
@@ -34,7 +35,7 @@ export default class CourseAdminPage extends Component{
             })
         } else {
             let currentCourseId = this.state.currentCourse.id;
-            newCurrentCourse = this.state.currentCourse;
+            newCurrentCourse = json[0];
             json.forEach((course, index) => {
                 if (course.id === currentCourseId) {
                     newCurrentCourse=course;
@@ -97,6 +98,7 @@ export default class CourseAdminPage extends Component{
     }
     addUserToCourse(userName, name, email){
         console.log(userName)
+        toast.success("Bruger " + userName + " tilføjet", {autoClose: 8000});
         let userUpdate = {userName: userName, name: name, email: email, role: "student"}
         Rip.postForString(this.currentCourseUrl() + '/users/', userUpdate,
             (String)=>{
@@ -111,8 +113,11 @@ export default class CourseAdminPage extends Component{
 
     addUserCSVToCourse(csvString) {
         let usersString = {usersCsv:csvString};
+        this.toastLoading = toast("Tilføjer brugere...", {autoClose: false});
         Rip.postForString(this.currentCourseUrl() + '/users/csv', usersString,
             (String)=>{
+                toast.dismiss(this.toastLoading);
+                toast.success("Brugere tilføjet", {autoClose: 5000});
                 this.fetchUserList(this.state.currentCourse.id);
             })
     }
@@ -123,7 +128,13 @@ export default class CourseAdminPage extends Component{
         Rip.postForString(this.currentCourseUrl() + "/name", shortAndName,
             (String)=>{
                 this.getCourses()
-            })
+            },(response)=>{
+                response.response.text().then((text)=>{
+                    toast.warn(response.status + ": " + text)
+                })
+            }
+
+        )
     }
 
     updateCourseUsesGoogleSheet = (checked)=> {
@@ -146,7 +157,7 @@ export default class CourseAdminPage extends Component{
         Rip.postForString(this.currentCourseUrl() + '/syncCoursePlan', null,
             (response)=>{
 
-                if (response.status==500){
+                if (response.status===500){
                     response.text().then((text)=>{
                         this.setState({syncError: text})
                     })
@@ -156,16 +167,35 @@ export default class CourseAdminPage extends Component{
                     this.setState({syncError: false, syncing:false})
                 }
             },
-            (errorMsg)=>{
-                this.setState({syncError: errorMsg, syncining:false})
+            (response)=>{
+                response.response.text().then((text)=>
+                {
+                    this.setState({syncError: text, syncing: false})
+                })
             })
     }
 
+
+    checkForCourseAdmin = ()=> {
+        let isCourseAdmin = false;
+        if (this.props.user && this.props.user.roles){
+            this.props.user.roles.forEach((role)=>{
+                if (role.roleName ==="CourseAdmin"){
+                    isCourseAdmin=true;
+                }
+            })
+        }
+        return isCourseAdmin;
+    }
+
     render(){
+        let userIsCourseAdmin = this.checkForCourseAdmin();
+        console.log("User is course admin: " + userIsCourseAdmin)
         return <Grid fluid>
+
             <Row>
                 <Col md={3}>
-                    <CourseAdminMenu loading={this.state.loading} courseClicked={this.courseSelected} newCourseClicked={this.newCourseSelected} courseList={this.state.courseList}/>
+                    <CourseAdminMenu createCourses={userIsCourseAdmin} loading={this.state.loading} courseClicked={this.courseSelected} newCourseClicked={this.newCourseSelected} courseList={this.state.courseList}/>
                 </Col>
                 <Col md={9}>
                     <CourseAdminMain course={this.state.currentCourse} users={this.state.users}
@@ -177,8 +207,8 @@ export default class CourseAdminPage extends Component{
                                      newGoogleSheetId={(sheetId)=>this.newGoogleSheetId(sheetId)}
                                      roleChecked={(userId,role,value)=>this.handleRoleCheck(userId,role,value)}
                                      syncError={this.state.syncError}
-                                    syncCoursePlan={()=>this.syncCourseCurrentCoursePlan()}
-                                    syncing={this.state.syncing}/>
+                                     syncCoursePlan={()=>this.syncCourseCurrentCoursePlan()}
+                                     syncing={this.state.syncing}/>
                 </Col>
             </Row>
         </Grid>
@@ -186,11 +216,15 @@ export default class CourseAdminPage extends Component{
     }
 
 
+
 }
 
 CourseAdminPage.propTypes = {
     apiUrl: PropTypes.string,
-    coursePath: PropTypes.string
+    coursePath: PropTypes.string,
+    course: PropTypes.any,
+    user: PropTypes.any
+
 }
 
 CourseAdminPage.defaultProps = {

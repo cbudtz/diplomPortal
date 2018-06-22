@@ -1,20 +1,18 @@
 /**
  * Created by Christian on 30-05-2017.
  */
-import React, {Component, PropTypes} from 'react';
-import {Col, Grid, ListGroup, ListGroupItem, Modal, ProgressBar, Row, Well} from 'react-bootstrap';
+import React, {Component, PropTypes} from "react";
+import {Col, ListGroup, ListGroupItem, Modal, OverlayTrigger, ProgressBar, Row, Tooltip, Well} from "react-bootstrap";
 import TextSubElement from "./TextSubElement";
 import PopOutLinkSubElement from "./PopOutLinkSubElement";
-import ProgrammingBox from "./ProgrammingBox";
-import EmbeddedLinkSubElement from "./EmbeddedLinkSubelement"
-import ContentEditable from "react-contenteditable";
+import EmbeddedLinkSubElement from "./EmbeddedLinkSubelement";
 import QuizSubElement from "./QuizSubElement";
 import ConceptQuestionSubElement from "./ConceptQuestionSubElement";
-import '../index.css'
+import "../index.css";
 import CheckboxComp from "./CheckboxComp";
 import ProgrammingSubElement from "./ProgrammingSubElement";
 
-export default class ActivityElementContainer extends Component {
+export default class ActivityElementModal extends Component {
 
 
     constructor(props) {
@@ -25,8 +23,6 @@ export default class ActivityElementContainer extends Component {
     }
 
     getSubElementBoxes = () => {
-        console.log("ActivityElementContainer Props:")
-        console.log(this.props)
         if (this.props.subElements) {
             return this.props.subElements.map((subElement, index) => {
                 if (subElement.subElementType === 'Text') {
@@ -67,9 +63,11 @@ export default class ActivityElementContainer extends Component {
     getMenuElements = () => {
         if (this.props.subElements) {
             return this.props.subElements.map((subelement, index)=>{
-                console.log('subelement');
-                console.log(subelement.id);
-                return <li key={index}><CheckboxComp id={subelement.id} checked={subelement.checked} onCheck={(checked, id)=>this.handleCheck(checked, id)}/>{subelement.title}</li>
+                return <li key={index}>
+
+
+                    <OverlayTrigger placement={'bottom'} overlay={<Tooltip>Afkryds elementet for at markere at det er læst/løst</Tooltip>}>
+                        <span><CheckboxComp id={subelement.id} checked={subelement.checked} onCheck={(checked, id)=>this.handleCheck(checked, id)}/></span></OverlayTrigger>{subelement.title}</li>
             })
         }
     }
@@ -82,9 +80,6 @@ export default class ActivityElementContainer extends Component {
         this.props.hideModal();
     }
 
-    handleClk = () =>{
-        console.log('test');
-    }
     handleCheck = (checked, id) => {
         this.props.handleSubElementCheck(checked, id)
     };
@@ -109,23 +104,23 @@ export default class ActivityElementContainer extends Component {
 
     render() {
         let now = this.calculateProgress();
-        let done = (now >= 100) ? true:false;
+        let done = (now >= 100);
         return (
-            <Modal bsSize="large" dialogClassName="custom-modal" show={this.props.showModal} onHide={this.hideModal}>
-                <Modal.Header closeButton><h3 style={{margin:-5}} onLoad={console.log('test')}>{this.props.title}</h3></Modal.Header>
+            <Modal bsSize="large" dialogClassName="custom-modal" show={this.props.showModal} onHide={this.hideModal} contentLabel="">
+                <Modal.Header closeButton><h3 style={{margin:-5}}>{this.props.title}</h3></Modal.Header>
 
 
                 <Modal.Body>
                     <Row>
                         <Col md={3} sm={4}>
-                            <Well onClick={this.handleClk()} style={{cursor: 'pointer', paddingLeft:0,paddingRight:0}}>
+                            <Well style={{cursor: 'pointer', paddingLeft:0,paddingRight:0}}>
                                 <ul>
                                     {this.getMenuElements()}
                                 </ul>
-                                <ProgressBar bsStyle={(now >= 100) ? "success": "info"}  now={now} label={
+                                <OverlayTrigger placement={'bottom'} overlay={<Tooltip id={this.props.id}>Viser hvor stor en del af materialet du har læst</Tooltip>}><ProgressBar bsStyle={(now >= 100) ? "success": "info"}  now={now} label={
 
                                     <span style={{color:"black"}}>{now}%</span>
-                                }/>
+                                }/></OverlayTrigger>
                             </Well>
                         </Col>
                         {/*Container for contents*/}
@@ -142,13 +137,9 @@ export default class ActivityElementContainer extends Component {
         )
     }
 
-
-    handleProgramBoxNotes = (e, id)=> {
-        this.handleTextBoxChange(e.target.value, id)
-    }
 }
 
-ActivityElementContainer.propTypes = {
+ActivityElementModal.propTypes = {
     subElements: PropTypes.arrayOf(
         PropTypes.shape({
             content: PropTypes.string,

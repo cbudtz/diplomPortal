@@ -2,47 +2,129 @@
  * Created by Christian on 31-07-2017.
  */
 import React, {Component, PropTypes} from 'react';
-import {Grid, Well} from "react-bootstrap";
+import {Button, Glyphicon, Grid, Well} from "react-bootstrap";
+import ContentEditable from "react-contenteditable";
 
 export default class CourseInfoPage extends Component{
-    constructor(props){
-        super();
+
+    constructor(props) {
+        super(props);
+        let content = props.content;
+        if (content===null || content===undefined)
+            content=[];
+        content = JSON.parse(JSON.stringify(content)); //Deep clone - most efficient way
+        this.state = {
+            content: content
+        }
     }
-    generateList = ()=>{
-        let infoMap =
-            [{left:"KursusAnsvarlig", right:"Stig Høgh , Lyngby Campus, Bygning 303B, Tlf. (+45) 4525 5239 , shog@dtu.dk Finn Gustafsson , Tlf. , figu@dtu.dk"},
-                {left:"Skemaplacering", right:"F2A (man 13-17) og Juni"},
-                {left:"Eksamensdato", right:"Kommer"},
-                {left:"Kursusmål",right:'En studerende, der fuldt ud har opfyldt kursets mål, vil kunne:<br> Redegøre for væsentlige dele af API’et, samt dets anvendelsesområder Konstruere stand-alone applikationer af en vis komplexitet Konstruere webapplikationer af en vis kompleksitet'},
-                {left:"Kursusindhold", right:"....."}
-            ]
+    updateLine = (event,index)=>{
+        console.log(event.target.value);
+        console.log(index);
+        let newContents = this.state.content;
+        newContents[index] = {title:this.state.content[index].title, content:event.target.value};
+        console.log(newContents);
+        this.setState({content: newContents});
+        // this.props.updateCourseInfo(newContents)
+    }
+
+
+    updateTitle = (event, index) =>{
+        let newContents = this.state.content;
+        newContents[index] = {title:event.target.value, content: this.state.content[index].content};
+        this.setState({content:newContents});
+    }
+
+    addLine = ()=>{
+        let content = this.state.content;
+        content.push({title:"titel", content:"indhold"})
+        this.setState({conent:content})
+    };
+
+
+    deleteLine =(index)=> {
+        let content = this.state.content;
+        console.log("index" + index);
+        console.log(content);
+        content.splice(index,1);
+        console.log(content);
+        this.setState({content:content});
+
+    }
+
+    cancelChange = ()=>{
+        this.setState({content:JSON.parse(JSON.stringify(this.props.content))})
+    };
+
+    saveLines = ()=>{
+        this.props.saveContent(this.state.content);
+    };
+
+    isAdmin = ()=>{
+        if (this.props.user && this.props.course && this.props.course.admins) {
+            return this.props.course.admins.includes(this.props.user.id)
+        }else {
+            return false;
+        }
+    }
+
+    generateEditableList = ()=>{
 
         var content =  (<dl className="dl-horizontal">
-            {infoMap.map((info, index)=>{
-                return <span key={index}><dt>{info.left}</dt><dd dangerouslySetInnerHTML={{__html:info.right}}></dd></span>
+            {this.state.content.map((info, index)=>{
+                return <span key={index}>
+                    <dt><a onClick={()=>this.deleteLine(index)}><Glyphicon glyph="remove" style={{float:"left"}}/></a><ContentEditable style={{float:"right"}}id={index} html={info.title} onChange={(event) => this.updateTitle(event, index)}/></dt>
+                    <dd><ContentEditable id={index} html={info.content} onChange={(event)=>this.updateLine(event,index)}/> </dd>
+                </span>
+            })
+            }
+            <a onClick={this.addLine}> <Glyphicon glyph="plus"/></a>
+        </dl>)
+        return content;
+
+
+    }
+    generateList = ()=>{
+
+        var content =  (<dl className="dl-horizontal">
+            {this.state.content.map((info, index)=>{
+                return <span key={index}>
+                    <dt>{info.title}</dt>
+                    <dd dangerouslySetInnerHTML={{__html:info.content}}/>
+                </span>
             })
             }
         </dl>)
         return content;
 
 
-    };
+    }
 
-    render() {
+    render(){
         return <Grid>
             <Well>
-                <h4>test</h4>
+                <h4>Kursusinformation</h4>
                 <hr/>
-                {this.generateList()}
+                {this.isAdmin() ?
+                    this.generateEditableList() :
+                    this.generateList()}
+                {this.isAdmin() &&<span>
+                <Button bsStyle={"primary"} onClick={this.saveLines}>Gem
+                </Button>
+                    < Button onClick={this.cancelChange}>Annullér</Button>
+                </span>
+                }
             </Well>
         </Grid>
 
     }
+
 }
 CourseInfoPage.propTypes = {
-    infoMap: PropTypes.arrayOf(React.PropTypes.shape({
-            left: React.PropTypes.String,
-            right: React.PropTypes.String
+    content: PropTypes.arrayOf(React.PropTypes.shape({
+            title: React.PropTypes.string,
+            content: React.PropTypes.string,
+            saveContent: React.PropTypes.func,
+            user: React.PropTypes.any
         }
     ))
 }
