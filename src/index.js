@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 //import 'bootstrap/dist/css/bootstrap-theme.css';
 import './index.css';
 import Config from './config';
+import TokenStore from "./stores/TokenStore";
+import ProfileStore from "./stores/ProfileStore";
 
 //Some code to extract a potential token....
 const token = getParameterByName("token");
@@ -17,9 +19,15 @@ if (token!=null && token.length>0){
 // Base React class
 
 const api =  Config.ApiPath ? Config.ApiPath + "/rest" : "/rest"
+
+const stores = {
+    TokenStore : new TokenStore(),
+    ProfileStore: new ProfileStore(api)
+}
+stores.ProfileStore.tokenStore =stores.TokenStore
 ReactDOM.render(
     //set apiUrl for deployment with seperate api host name eg: https://diplomportal.herokuapp.com/rest
-  <App apiUrl={api} name="DiplomPortal"/>,
+  <App stores={stores} apiUrl={api} name="DiplomPortal"/>,
   document.getElementById('root')
 );
 

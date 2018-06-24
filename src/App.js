@@ -83,10 +83,9 @@ export default class App extends Component {
         console.log("user passed to App:");
         console.log(user);
 
-
         if (user) {
-            console.log("User Found")
-
+            console.log("User Found");
+            props.stores.TokenStore.setToken(JwtHandler.getToken())
             this.fetchUser(user.id);
             this.state = {
                 user:user,
@@ -361,7 +360,7 @@ export default class App extends Component {
         } else if (component === "PortalAdmin") {
             return <PortalAdminPage course={this.state.course} apiUrl={this.props.apiUrl}/>
         } else if (component === "ProfilePage") {
-            return <ProfilePage user={this.state.user} updateUser={(user)=>this.userUpdate(user)}/>
+            return <ProfilePage store={this.props.stores.ProfileStore} user={this.state.user} updateUser={(user)=>this.userUpdate(user)}/>
         } else {
             return <LoginPage course={this.state.course} apiUrl={this.props.apiUrl}/>
         }
@@ -435,7 +434,7 @@ export default class App extends Component {
     }
 
     render() {
-        console.log("main state:")
+        console.log("main state:");
         console.log(this.state);
         return (
             <div className="App">

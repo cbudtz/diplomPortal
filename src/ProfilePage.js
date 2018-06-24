@@ -2,9 +2,22 @@
  * Created by Christian on 07-04-2017.
  */
 import React, {Component, PropTypes} from 'react';
-import {Row, Col, Grid, Button, FormGroup, ControlLabel, FormControl, Form} from 'react-bootstrap';
+import {Row, Col, Grid, Button, FormGroup, ControlLabel, FormControl, Form, Label} from 'react-bootstrap';
+import {observer} from "mobx-react";
 
-export default class ProfilePage extends Component {
+class ProfilePage extends Component {
+    deletedb = ()=>{
+        const answer = confirm("Er du sikker på at du vil slette din database?!! Alle data vil gå tabt");
+        if (answer){
+            this.props.store.deletedb();
+        }
+    };
+    createDB = ()=>{
+        this.props.store.createDB();
+    };
+    updatePass = ()=> {
+        this.props.store.updatePass();
+    };
 
     constructor(props){
         super();
@@ -32,6 +45,7 @@ export default class ProfilePage extends Component {
         })
     };
     render(){
+        let dbInfo = this.props.store.dbInfo;
         return <Grid>
             <Row>
                 <Col xsOffset={3} xs={6} className="text-center">
@@ -54,6 +68,27 @@ export default class ProfilePage extends Component {
                     </Form>
                     <Button onClick={this.updateUserBtnPressed}>Opdater Bruger</Button>
                     <Button onClick={this.resetForm}>Reset</Button>
+                    <h4>Din personlige Database</h4>
+                    {!this.props.store.loading && dbInfo.id &&
+                    <div>
+                        <Label>Host</Label><div>diplomportal.c2nouactg6m6.eu-west-1.rds.amazonaws.com</div>
+                        <Label>BrugerNavn</Label><div>{dbInfo.id}</div>
+                        <Label>Kodeord</Label><div>{dbInfo.pass}</div>
+                        <Label>Database navn</Label><div>{dbInfo.id}</div>
+                        <Label>Skriverettigheder</Label><div>{dbInfo.revoked ? "Nej - reducer din database størrelse til under 50 MB" :"Ja"}</div>
+                        <Button onClick={this.updatePass}>Nyt kodeord</Button>
+                        <Button bsStyle={"danger"} onClick={this.deletedb}>Slet din database</Button>
+                    </div>
+
+                    }
+                    {!this.props.store.loading && !dbInfo.id &&
+                    <div>
+                        <Button onClick={this.createDB}>Opret ny database</Button>
+                    </div>
+                    }
+                    {this.props.store.loading &&
+                        <div>Opdaterer database...</div>}
+
                 </Col>
             </Row>
         </Grid>
@@ -68,3 +103,5 @@ ProfilePage.proptypes={
         email:PropTypes.string
     })
 }
+
+export default observer(ProfilePage)

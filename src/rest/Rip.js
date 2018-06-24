@@ -9,7 +9,7 @@ export default class Rip {
 
     static getJson = (url, callback, catchback) => {
         if (debug) console.log("Rip: Fetching from " + url);
-        var jwtToken = JwtHandler.getToken();
+        const jwtToken = JwtHandler.getToken();
         fetch(url, {
             mode: 'cors',
             method: 'GET',
@@ -113,13 +113,34 @@ export default class Rip {
             })
         }).then((response) => {
             if(response.status === 200 || response.status === 204 || response.status ===201) {
-                callback({message: "Rip: Error while POST'ing: " + response.message, response: response});
+                callback({message: "Rip: OK while POST'ing: " + response.message, response: response});
             } else {
                 catchback({message: "Rip: Error while POST'ing: " + response.message, response: response});
             }
         }).catch((response) => {
             catchback({message: "Rip: Error while POST'ing: " + response.message, response: response});
         })
+    }
+
+    static del = (url,callback, catchback) =>{
+        const token = JwtHandler.getToken();
+        fetch(url, {
+            mode: 'cors',
+            method: 'DELETE',
+            headers: new Headers({
+                'Content-type' : 'application/json',
+                'authorization' : 'Bearer ' + token
+            })
+        }).then((response) => {
+            if(response.status === 200 || response.status === 204 || response.status ===201) {
+                callback({message: "Rip: OK DELETING: " + response.message, response: response});
+            } else {
+                catchback({message: "Rip: Error while DELETING'ing: " + response.message, response: response});
+            }
+        }).catch((response) => {
+            catchback({message: "Rip: Error while POST'ing: " + response.message, response: response});
+        })
+
     }
 
     static handleJSON = (response,callback,catchback)=>{
@@ -135,5 +156,25 @@ export default class Rip {
             if (debug) console.log(riperror);
             catchback(riperror);
         })
+    }
+
+    static getOwnDb = (apiURL, userName,callback, catchback) =>{
+        Rip.getJson(apiURL + "/database/self",(json)=>{
+            callback(json);
+        }, catchback)
+
+    }
+
+    static deleteOwnDb(apiUrL, userName, callback, catchback) {
+        Rip.del(apiUrL + "/database/self", callback, catchback
+        )
+    }
+
+    static createOwnDb(apiUrL, userName, callback, catchback) {
+        Rip.post(apiUrL + "/database/self", callback , catchback)
+    }
+
+    static updateOwnPass(apiUrL, userName, callback, catchback) {
+        Rip.post(apiUrL + "/database/self/pass",callback,catchback)
     }
 }
