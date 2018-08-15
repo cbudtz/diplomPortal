@@ -71,7 +71,7 @@ class ProfilePage extends Component {
                     <h4>Din personlige Database</h4>
                     {!this.props.store.loading && dbInfo.id &&
                     <div>
-                        <Label>Host</Label><div>diplomportal.c2nouactg6m6.eu-west-1.rds.amazonaws.com</div>
+                        <Label>Host</Label><div>ec2-52-51-194-59.eu-west-1.compute.amazonaws.com</div>
                         <Label>BrugerNavn</Label><div>{dbInfo.id}</div>
                         <Label>Kodeord</Label><div>{dbInfo.pass}</div>
                         <Label>Database navn</Label><div>{dbInfo.id}</div>
