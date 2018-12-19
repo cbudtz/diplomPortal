@@ -5,7 +5,7 @@ import Rip from "../rest/Rip";
 
 class ProfileStore {
     user = null;
-    dbInfo = {id: null, pass: null, revoked:null};
+    dbInfo = {id: null, pass: null, revoked:null,hostUrl:""};
     tokenStore = {user:""};
     apiUrL = "";
     loading = "false";
