@@ -135,7 +135,7 @@ export default class App extends Component {
                     agendaDropDown
                     ,
                     {type: "NavItem", id: {component: "Agenda"}, text: "Agenda"},
-                    {type: "NavItem", id: {component: "CourseInfo"}, text: "Kursus oversigt"},
+                    {type: "NavItem", id: {component: "CourseInfo"}, text: "Kursus information"},
                     // {type: "NavItem", id: {component: "Syllabus"}, text: "Pensum", component: "Syllabus"},
                     // {type: "NavItem", id: {component: "Forum"}, text: "Forum", component: "Forum"},
                     adminDropDown
@@ -203,7 +203,7 @@ export default class App extends Component {
                 agendaDropDown
                 ,
                 {type: "NavItem", id: {component: "Agenda"}, text: "Agenda"},
-                {type: "NavItem", id: {component: "CourseInfo"}, text: "Kursus oversigt"},
+                {type: "NavItem", id: {component: "CourseInfo"}, text: "Kursus information"},
                 // {type: "NavItem", id: {component: "Syllabus"}, text: "Pensum", component: "Syllabus"},
                 // {type: "NavItem", id: {component: "Forum"}, text: "Forum", component: "Forum"},
                 adminDropDown
