@@ -96,9 +96,14 @@ export default class TopMenu extends Component {
                 return <NavItem key={no} eventKey={nav.id}
                                 active={this.state.active.component === nav.id.component}>{nav.text}</ NavItem>
             } else if (nav.type === "NavDropDown") {
-                var items = nav.items.map((item, no) => {
+                debugger;
+                nav.items = nav.items.sort(function(a, b){
+                    if(a.text < b.text) { return -1; }
+                    if(a.text > b.text) { return 1; }
+                    return 0;});
+                const items = nav.items.map((item, no) => {
                     return (<MenuItem key={no} eventKey={item.id}>{item.text}</MenuItem>)
-                })
+                });
                 return (<NavDropdown key={nav.id} id={nav.id} title={nav.text}>
                     {items}
                 </NavDropdown>)
@@ -216,7 +221,7 @@ const DragHandle = SortableHandle(()=> <span><Glyphicon glyph="resize-vertical"/
 
 
 const SortableItem = SortableElement(({value, removeLink}) =>
-    <NavItem onClick={()=>window.open(value.href)}><DragHandle/>{value.text} <Glyphicon value={value.href} glyph="remove" onClick={(e)=>{e.stopPropagation();removeLink(value)}}/></NavItem>
+    <NavItem href={value.href} onClick={()=>window.open(value.href)}><DragHandle/>{value.text} <Glyphicon value={value.href} glyph="remove" onClick={(e)=>{e.stopPropagation();removeLink(value)}}/></NavItem>
 );
 
 const SortableNav = SortableContainer(({items, newLink, removeLink}) => {
