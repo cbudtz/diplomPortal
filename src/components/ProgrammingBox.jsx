@@ -2,13 +2,6 @@
  * Created by Christian on 23-05-2017.
  */
 import React, {Component, PropTypes} from "react";
-import AceEditor from 'react-ace';
-import 'brace/mode/java.js';
-import 'brace/mode/javascript';
-import 'brace/theme/eclipse';
-import 'brace/ext/language_tools';
-import 'brace/ext/searchbox';
-import brace from 'brace';
 
 import {Button, ButtonGroup, Panel, PanelGroup} from "react-bootstrap";
 import update from 'immutability-helper';
@@ -108,26 +101,26 @@ export default class ProgrammingBox extends Component {
                     Kode-Editor
                 </h4>
 
-                <AceEditor
-                    markers={[{
-                        startRow:1,startCol:1,endRow:1,endCol:1,type:"Error"}
-                    ]}
-                    mode="java"
-                    theme="eclipse"
-                    name="testBox"
-                    height="15em"
-                    setOptions={{
-                        enableBasicAutocompletion: true,
-                        enableLiveAutocompletion: true,
-                        enableSnippets: true,
-                        showLineNumbers: true,
-                        tabSize: 10,
-                    }}
-                    value={this.state.files[this.state.activeFile].fileContents}
-                    onChange={this.handleAceEditorChange}
+                {/*<AceEditor*/}
+                {/*    markers={[{*/}
+                {/*        startRow:1,startCol:1,endRow:1,endCol:1,type:"Error"}*/}
+                {/*    ]}*/}
+                {/*    mode="java"*/}
+                {/*    theme="eclipse"*/}
+                {/*    name="testBox"*/}
+                {/*    height="15em"*/}
+                {/*    setOptions={{*/}
+                {/*        enableBasicAutocompletion: true,*/}
+                {/*        enableLiveAutocompletion: true,*/}
+                {/*        enableSnippets: true,*/}
+                {/*        showLineNumbers: true,*/}
+                {/*        tabSize: 10,*/}
+                {/*    }}*/}
+                {/*    value={this.state.files[this.state.activeFile].fileContents}*/}
+                {/*    onChange={this.handleAceEditorChange}*/}
 
 
-                />
+                {/*/>*/}
 
                 <ButtonGroup>
                     <Button onClick={this.handleRunClick} className={this.state.compiling ? "disabled" : ""}>
