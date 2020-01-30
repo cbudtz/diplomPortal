@@ -1,7 +1,8 @@
 /**
  * Created by Christian on 05-08-2017.
  */
-import React,{Component, PropTypes} from 'react'
+import React,{Component} from 'react';
+import PropTypes from 'prop-types';
 import {Glyphicon} from "react-bootstrap";
 
 export default class EditableHeadLine extends Component{

@@ -1,7 +1,8 @@
 /**
  * Created by Christian on 07-04-2017.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Row, Col, Grid, Button, FormGroup, ControlLabel, FormControl, Form, Label} from 'react-bootstrap';
 import {observer} from "mobx-react";
 

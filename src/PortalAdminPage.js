@@ -2,7 +2,8 @@
  * Created by Christian on 01-08-2017.
  */
 
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
+import PropTypes from 'prop-types';
 import {Col, Grid, OverlayTrigger, Panel, Row, Table, Tooltip} from "react-bootstrap";
 import Rip from './rest/Rip'
 import {BootstrapTable, TableHeaderColumn} from "react-bootstrap-table";

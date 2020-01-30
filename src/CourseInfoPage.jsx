@@ -1,7 +1,8 @@
 /**
  * Created by Christian on 31-07-2017.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {Component } from 'react';
+import PropTypes from 'prop-types';
 import {Button, Glyphicon, Grid, Well} from "react-bootstrap";
 import ContentEditable from "react-contenteditable";
 
@@ -120,11 +121,11 @@ export default class CourseInfoPage extends Component{
 
 }
 CourseInfoPage.propTypes = {
-    content: PropTypes.arrayOf(React.PropTypes.shape({
-            title: React.PropTypes.string,
-            content: React.PropTypes.string,
-            saveContent: React.PropTypes.func,
-            user: React.PropTypes.any
+    content: PropTypes.arrayOf(PropTypes.shape({
+            title: PropTypes.string,
+            content: PropTypes.string,
+            saveContent: PropTypes.func,
+            user: PropTypes.any
         }
     ))
 }

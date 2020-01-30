@@ -1,7 +1,8 @@
 /**
  * Created by Christian on 30-05-2017.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import ActivityElementTD from "./ActivityElementTD";
 
 export default class ActivityRow extends Component{

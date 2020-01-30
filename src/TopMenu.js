@@ -1,7 +1,8 @@
 /**
  * Created by Christian on 02-05-2017.
  */
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import {
     Button,
     Col,
@@ -96,7 +97,7 @@ export default class TopMenu extends Component {
                 return <NavItem key={no} eventKey={nav.id}
                                 active={this.state.active.component === nav.id.component}>{nav.text}</ NavItem>
             } else if (nav.type === "NavDropDown") {
-                debugger;
+
                 nav.items = nav.items.sort(function(a, b){
                     if(a.text < b.text) { return -1; }
                     if(a.text > b.text) { return 1; }

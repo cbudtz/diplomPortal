@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import {Col, Grid, Row} from "react-bootstrap";
 import AgendaTable from "./components/AgendaTable";
 import ripple from './ripple.svg';

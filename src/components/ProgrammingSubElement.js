@@ -1,7 +1,8 @@
 /**
  * Created by Christian on 14-08-2017.
  */
-import React, {Component,PropTypes} from 'react'
+import React, {Component} from 'react'
+import PropTypes from 'prop-types';
 import {Col, Glyphicon, Grid, ListGroupItem, OverlayTrigger, Row, Tooltip} from "react-bootstrap";
 import ContentEditable from "react-contenteditable";
 import CheckboxComp from "./CheckboxComp";

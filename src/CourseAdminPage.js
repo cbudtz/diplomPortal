@@ -2,7 +2,8 @@
  * Created by Christian on 01-08-2017.
  */
 
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Col, Grid, Row} from "react-bootstrap";
 import CourseAdminMenu from "./components/CourseAdminMenu";
 import Rip from "./rest/Rip";

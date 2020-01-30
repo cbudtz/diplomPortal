@@ -1,7 +1,8 @@
 /**
  * Created by Christian on 30-05-2017.
  */
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import {Col, ListGroup, ListGroupItem, Modal, OverlayTrigger, ProgressBar, Row, Tooltip, Well} from "react-bootstrap";
 import TextSubElement from "./TextSubElement";
 import PopOutLinkSubElement from "./PopOutLinkSubElement";

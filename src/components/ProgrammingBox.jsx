@@ -1,7 +1,8 @@
 /**
  * Created by Christian on 23-05-2017.
  */
-import React, {Component, PropTypes} from "react";
+import React, {Component} from "react";
+import PropTypes from 'prop-types';
 
 import {Button, ButtonGroup, Panel, PanelGroup} from "react-bootstrap";
 import update from 'immutability-helper';

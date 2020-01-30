@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import "./App.css";
 import TopMenu from "./TopMenu.js";
 import Agenda from "./AgendaPage.jsx";
@@ -457,7 +458,7 @@ export default class App extends Component {
 }
 
 App.propTypes = {
-    apiUrl : React.PropTypes.string
+    apiUrl : PropTypes.string
 }
 App.defaultProps = {
     apiUrl: '' //for deployment at same root
