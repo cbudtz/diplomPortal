@@ -8,7 +8,7 @@ import {observer} from "mobx-react";
 
 class ProfilePage extends Component {
     deletedb = ()=>{
-        const answer = confirm("Er du sikker på at du vil slette din database?!! Alle data vil gå tabt");
+        const answer = window.confirm("Er du sikker på at du vil slette din database?!! Alle data vil gå tabt");
         if (answer){
             this.props.store.deletedb();
         }
@@ -97,7 +97,7 @@ class ProfilePage extends Component {
     }
 }
 
-ProfilePage.proptypes={
+ProfilePage.propTypes = {
     updateUser: PropTypes.func,
     user: PropTypes.shape({
         firstName:PropTypes.string,

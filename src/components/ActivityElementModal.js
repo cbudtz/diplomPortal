@@ -94,7 +94,7 @@ export default class ActivityElementModal extends Component {
         var finished = 0.0;
         if (this.props.subElements && Array.isArray(this.props.subElements)) {
             this.props.subElements.forEach((element) => {
-                if (element.checked==true)finished++;
+                if (element.checked===true)finished++;
             })
             return ((finished / this.props.subElements.length ) * 100).toFixed(0)
         } else {

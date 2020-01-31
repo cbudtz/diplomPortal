@@ -6,9 +6,6 @@ import CheckboxComp from "./CheckboxComp";
 
 export default class EmbeddedLinkSubelement extends Component {
 
-    constructor(props){
-        super(props);
-    }
 
     handleChange = (e) =>{
         this.props.onChange(e.target.value, this.props.textBoxId)

@@ -20,6 +20,7 @@ import {
 } from "react-bootstrap";
 import Config from "./config";
 import {arrayMove, SortableContainer, SortableElement, SortableHandle} from "react-sortable-hoc";
+import {styles} from "./index";
 
 export default class TopMenu extends Component {
     sortEnd = ({oldIndex, newIndex})=>{
@@ -64,7 +65,7 @@ export default class TopMenu extends Component {
         } else {
             //Send User to CampusnetLogin
             const redirectUrl = Config.ApiPath ? Config.ApiPath + Config.campusNetServiceUrl : Config.campusNetServiceUrl;
-            location.replace(redirectUrl);
+            window.location.replace(redirectUrl);
         }
     };
 
@@ -120,7 +121,7 @@ export default class TopMenu extends Component {
     getLinkContent =()=> {
         if (!(this.props.links)) return;
         return this.props.links.map((link)=>{
-            return <NavItem key={link.href} onClick={()=>window.open(link.href)}>{link.text}</NavItem>
+            return <NavItem style={styles.a} key={link.href} onClick={(e)=>{e.preventDefault(); window.open(link.href)}}>{link.text}</NavItem>
         })
 
     }
@@ -208,7 +209,7 @@ export default class TopMenu extends Component {
 
 }
 
-TopMenu.proptypes = {
+TopMenu.propTypes = {
     onLogout: PropTypes.func,
     onProfileEdit: PropTypes.func,
     onSelect: PropTypes.func,
@@ -222,7 +223,7 @@ const DragHandle = SortableHandle(()=> <span><Glyphicon glyph="resize-vertical"/
 
 
 const SortableItem = SortableElement(({value, removeLink}) =>
-    <NavItem href={value.href} onClick={()=>window.open(value.href)}><DragHandle/>{value.text} <Glyphicon value={value.href} glyph="remove" onClick={(e)=>{e.stopPropagation();removeLink(value)}}/></NavItem>
+    <NavItem href={value.href} onClick={(e)=>{e.preventDefault();window.open(value.href)}}><DragHandle/>{value.text} <Glyphicon value={value.href} glyph="remove" onClick={(e)=>{e.stopPropagation();removeLink(value)}}/></NavItem>
 );
 
 const SortableNav = SortableContainer(({items, newLink, removeLink}) => {

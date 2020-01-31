@@ -8,13 +8,15 @@ import Config from './config';
 import TokenStore from "./stores/TokenStore";
 import ProfileStore from "./stores/ProfileStore";
 
+export const styles = {a:{cursor:"pointer", color:"#337ab7"}}
+
 //Some code to extract a potential token....
 const token = getParameterByName("token");
 console.log(token);
 if (token!=null && token.length>0){
     //Store token and redirect to baseURL
     localStorage.setItem("portal-jwt-Token",token);
-    location.replace("/");
+    window.location.replace("/");
 }
 // Base React class
 

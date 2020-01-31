@@ -18,7 +18,7 @@ class LoginPage extends Component {
 
     cnLogin = () =>{
         const redirectUrl = Config.ApiPath ? Config.ApiPath + Config.campusNetServiceUrl : Config.campusNetServiceUrl;
-        location.replace(redirectUrl);
+        window.location.replace(redirectUrl);
     }
     render(){
         return <Grid>

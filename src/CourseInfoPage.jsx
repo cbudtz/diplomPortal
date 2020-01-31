@@ -5,6 +5,7 @@ import React, {Component } from 'react';
 import PropTypes from 'prop-types';
 import {Button, Glyphicon, Grid, Well} from "react-bootstrap";
 import ContentEditable from "react-contenteditable";
+import {styles} from "./index";
 
 export default class CourseInfoPage extends Component{
 
@@ -73,12 +74,12 @@ export default class CourseInfoPage extends Component{
         var content =  (<dl className="dl-horizontal">
             {this.state.content.map((info, index)=>{
                 return <span key={index}>
-                    <dt><a onClick={()=>this.deleteLine(index)}><Glyphicon glyph="remove" style={{float:"left"}}/></a><ContentEditable style={{float:"right"}}id={index} html={info.title} onChange={(event) => this.updateTitle(event, index)}/></dt>
+                    <dt><div style={styles.a} onClick={()=>this.deleteLine(index)}><Glyphicon glyph="remove" style={{float:"left"}}/></div><ContentEditable style={{float:"right"}}id={index} html={info.title} onChange={(event) => this.updateTitle(event, index)}/></dt>
                     <dd><ContentEditable id={index} html={info.content} onChange={(event)=>this.updateLine(event,index)}/> </dd>
                 </span>
             })
             }
-            <a onClick={this.addLine}> <Glyphicon glyph="plus"/></a>
+            <div style={styles.a}> <Glyphicon glyph="plus"/></div>
         </dl>)
         return content;
 

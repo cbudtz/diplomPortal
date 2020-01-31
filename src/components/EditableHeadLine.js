@@ -4,6 +4,7 @@
 import React,{Component} from 'react';
 import PropTypes from 'prop-types';
 import {Glyphicon} from "react-bootstrap";
+import {styles} from "../index";
 
 export default class EditableHeadLine extends Component{
     handleGlyphClick(event){
@@ -42,11 +43,11 @@ export default class EditableHeadLine extends Component{
             return <h3>
                 <input type="text" value={this.state.shortHand} onChange={(e)=>this.handleShortHandChange(e)}/> -
                 <input type="text" value={this.state.courseName} onChange={(e)=>this.handleCourseNameChage(e)}/>
-                <a onClick={(e)=>{this.handleGlyphOkClick(e)}}><Glyphicon glyph="ok" /></a>
-                <a onClick={(e)=>{this.handleGlyphClick(e)}}><Glyphicon glyph="remove"/></a>
+                <div style={styles.a} onClick={(e)=>{this.handleGlyphOkClick(e)}}><Glyphicon glyph="ok" /></div>
+                <div style={styles.a} onClick={(e)=>{this.handleGlyphClick(e)}}><Glyphicon glyph="remove"/></div>
             </h3>
         } else {
-            return <h3><span>{this.props.shortHand}</span> - <span>{this.props.courseName} </span><a onClick={(e)=>{this.handleGlyphClick(e)}}><Glyphicon glyph="pencil"/></a></h3>
+            return <h3><span>{this.props.shortHand}</span> - <span>{this.props.courseName} </span><div style={styles.a} onClick={(e)=>{this.handleGlyphClick(e)}}><Glyphicon glyph="pencil"/></div></h3>
                 }
 
     }

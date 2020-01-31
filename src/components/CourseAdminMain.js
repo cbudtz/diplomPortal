@@ -4,7 +4,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-    Button, Checkbox, ControlLabel, Form, FormControl, FormGroup, HelpBlock, Panel,
+    Button, ControlLabel, Form, FormControl, FormGroup, HelpBlock, Panel,
     Table
 } from "react-bootstrap";
 import CheckboxComp from "./CheckboxComp";
@@ -14,8 +14,8 @@ import ripple from '../ripple.svg'
 
 export default class CourseAdminMain extends Component{
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state={
             csv: '',
             sheetBox: ''

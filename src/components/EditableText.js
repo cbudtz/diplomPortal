@@ -7,6 +7,7 @@
 import React,{Component} from 'react';
 import PropTypes from 'prop-types';
 import {Glyphicon} from "react-bootstrap";
+import {styles} from "../index";
 
 export default class EditableHeadLine extends Component{
     handleGlyphClick(event){
@@ -36,11 +37,11 @@ export default class EditableHeadLine extends Component{
         if(this.state.editmode){
             return <span>
                 <input type="text" value={this.state.text} onChange={(e)=>this.handleTextChage(e)}/>
-                <a onClick={(e)=>{this.handleGlyphOkClick(e)}}><Glyphicon glyph="ok" /></a>
-                <a onClick={(e)=>{this.handleGlyphClick(e)}}><Glyphicon glyph="remove"/></a>
+                <div style={styles.a} onClick={(e)=>{this.handleGlyphOkClick(e)}}><Glyphicon glyph="ok" /></div>
+                <div style={styles.a} onClick={(e)=>{this.handleGlyphClick(e)}}><Glyphicon glyph="remove"/></div>
             </span>
         } else {
-            return <span><span>{this.props.text} </span><a onClick={(e)=>{this.handleGlyphClick(e)}}><Glyphicon glyph="pencil"/></a></span>
+            return <span><span>{this.props.text} </span><div style={styles.a} onClick={(e)=>{this.handleGlyphClick(e)}}><Glyphicon glyph="pencil"/></div></span>
         }
 
     }

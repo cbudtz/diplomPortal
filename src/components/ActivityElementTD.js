@@ -2,8 +2,9 @@
  * Created by Christian on 30-05-2017.
  */
 import React, {Component} from 'react';
-import PropTypes, {shape} from 'prop-types';
+import PropTypes from 'prop-types';
 import {OverlayTrigger, ProgressBar, Tooltip} from "react-bootstrap";
+import {styles} from "../index";
 
 
 export default class ActivityElementTD extends Component {
@@ -27,8 +28,8 @@ export default class ActivityElementTD extends Component {
         now = +now || 0; //Convert NaN to 0
         let showProgress = this.props.activityElement.subElements.length > 0;
         return (<td className="td-wrap">
-            <a style={{cursor: "pointer"}} target="_blank" onClick={(e)=>this.handleActivityElementClick(e)} id={this.props.activityElement.id}>
-                {this.props.activityElement.title} </a>
+            <div style={styles.a} target="_blank" onClick={(e)=>this.handleActivityElementClick(e)} id={this.props.activityElement.id}>
+                {this.props.activityElement.title} </div>
             {showProgress &&  <OverlayTrigger placement={'bottom'} overlay={<Tooltip>Viser hvor stor en del af materialet du har læst</Tooltip>}><ProgressBar bsStyle={(now >= 100) ? "success": "info"}  now={now} label={
                 <span style={{color:"black"}}>{now}%</span>
             }/></OverlayTrigger>}

@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Table} from "react-bootstrap";
-import Rip from '../rest/Rip'
 import ActivityRow from "./ActivityRow";
-import ripple from '../ripple.svg';
 //import index from '../index.css'
 
 export default class AgendaTable extends Component {

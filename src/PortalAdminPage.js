@@ -4,16 +4,14 @@
 
 import React, {Component} from 'react'
 import PropTypes from 'prop-types';
-import {Col, Grid, OverlayTrigger, Panel, Row, Table, Tooltip} from "react-bootstrap";
+import {Col, Grid, Row} from "react-bootstrap";
 import Rip from './rest/Rip'
 import {BootstrapTable, TableHeaderColumn} from "react-bootstrap-table";
 import CheckboxComp from "./components/CheckboxComp";
-import {ToastContainer, toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.min.css';
 
 export default class PortalAdminPage extends Component {
-
-
 
     constructor(props){
         super(props);
@@ -164,6 +162,6 @@ export default class PortalAdminPage extends Component {
     }
 }
 
-PortalAdminPage.proptypes={
+PortalAdminPage.propTypes={
     apiUrl: PropTypes.string
 }
